@@ -10,7 +10,7 @@ import org.springframework.web.bind.annotation.*;
 @Slf4j
 @RequiredArgsConstructor
 @Validated
-public class UserControllerByPriv {
+public class UserControllerPrivate {
 
 //    private final UserService userService;
 //

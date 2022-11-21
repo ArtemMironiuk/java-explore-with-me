@@ -10,6 +10,7 @@ import javax.validation.constraints.NotBlank;
 @AllArgsConstructor
 @NoArgsConstructor
 @ToString
+@Builder
 public class NewUserRequest {
     @Email(message = "Неверно указан email")
     @NotBlank(message = "Поле email не должно быть пустым")

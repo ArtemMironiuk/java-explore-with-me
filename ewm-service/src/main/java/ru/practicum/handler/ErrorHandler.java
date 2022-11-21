@@ -8,6 +8,9 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 import ru.practicum.handler.exception.ObjectNotFoundException;
 import ru.practicum.handler.exception.ValidationException;
 
+import java.time.LocalDateTime;
+import java.util.List;
+
 @RestControllerAdvice
 @Slf4j
 public class ErrorHandler {
@@ -21,9 +24,10 @@ public class ErrorHandler {
 
     @ExceptionHandler
     @ResponseStatus(HttpStatus.NOT_FOUND)
-    public ErrorResponse handleNotFound(final ObjectNotFoundException e) {
+    public ApiError handleNotFound(final ObjectNotFoundException e) {
         log.info("404 {}", e.getMessage(), e);
-        return new ErrorResponse(e.getMessage());
+        return new ApiError(e.printStackTrace() ,e.getMessage(), e.getCause(), HttpStatus.NOT_FOUND.toString(),
+                LocalDateTime.now().withNano(0));
     }
 
     @ExceptionHandler

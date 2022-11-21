@@ -63,7 +63,7 @@ public class Event {
     @Column(name = "published_on")
     private LocalDateTime publishedOn;
     @Column(name = "event_state")
-    private String state;
+    private State state;
     @Column(name = "views")
     private Integer views;
     @NotBlank

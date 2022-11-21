@@ -6,6 +6,7 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import ru.practicum.dto.user.NewUserRequest;
 import ru.practicum.dto.user.UserDto;
+import ru.practicum.service.UserService;
 
 import javax.validation.Valid;
 import javax.validation.constraints.Positive;
@@ -22,7 +23,7 @@ public class UserControllerByAdmin {
     private final UserService userService;
 
     @GetMapping
-    public List<UserDto> findUsers(@RequestParam @PositiveOrZero (name = "ids", required = false) Long ids,
+    public List<UserDto> findUsers(@RequestParam (name = "ids", required = false)  long[] ids,
                                    @RequestParam(name = "from", defaultValue = "0") Integer from,
                                    @RequestParam(name = "size", defaultValue = "10") Integer size) {
         log.info("Получен запрос к эндпоинту GET, /admin/users");
@@ -36,7 +37,7 @@ public class UserControllerByAdmin {
     }
 
     @DeleteMapping("/{userId}")
-    public void deleteUser(@PathVariable @Positive Long userId) {
+    public void deleteUser(@PathVariable @PositiveOrZero Long userId) {
         log.info("Получен запрос к эндпоинту DELETE, /admin/users/{userId}");
         userService.deleteUser(userId);
     }

@@ -11,6 +11,7 @@ import javax.validation.constraints.PositiveOrZero;
 @AllArgsConstructor
 @NoArgsConstructor
 @ToString
+@Builder
 public class UserShortDto {
     @NotBlank
     @NotNull

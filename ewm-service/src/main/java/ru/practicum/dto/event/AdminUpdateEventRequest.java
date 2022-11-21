@@ -1,11 +1,8 @@
 package ru.practicum.dto.event;
 
 import lombok.*;
+import ru.practicum.model.Location;
 
-import javax.validation.constraints.Future;
-import javax.validation.constraints.NotNull;
-import javax.validation.constraints.PositiveOrZero;
-import javax.validation.constraints.Size;
 import java.time.LocalDateTime;
 
 @Getter
@@ -14,19 +11,15 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 @ToString
 @Builder
-public class UpdateEventDto {
-    @Size(min = 20, max = 2000)
+public class AdminUpdateEventRequest {
     private String annotation;
     private Integer category;
-    @Size(min = 20, max = 7000)
     private String description;
-    @Future
     private LocalDateTime eventDate;
-    @PositiveOrZero
-    @NotNull
-    private Long eventId;
+    private Location location;
     private Boolean paid;
     private Integer participantLimit;
-    @Size(min = 3, max = 120)
+    private Boolean requestModeration;
     private String title;
+
 }

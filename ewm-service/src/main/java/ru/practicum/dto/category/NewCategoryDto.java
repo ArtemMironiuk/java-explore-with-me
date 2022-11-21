@@ -9,6 +9,7 @@ import javax.validation.constraints.NotBlank;
 @AllArgsConstructor
 @NoArgsConstructor
 @ToString
+@Builder
 public class NewCategoryDto {
     @NotBlank(message = "название категории не может быть пустым")
     private String name;

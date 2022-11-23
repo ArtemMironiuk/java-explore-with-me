@@ -9,6 +9,7 @@ import javax.persistence.*;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.PositiveOrZero;
+import java.util.List;
 
 @Data
 @AllArgsConstructor
@@ -18,6 +19,10 @@ import javax.validation.constraints.PositiveOrZero;
 @Table(name = "compilations")
 public class Compilation {
 
+    @NotNull
+    @OneToMany
+    @JoinColumn(name = "event_id")
+    private List<Event> events;
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id")
@@ -30,5 +35,4 @@ public class Compilation {
     @NotNull
     @NotBlank
     private String title;
-
 }

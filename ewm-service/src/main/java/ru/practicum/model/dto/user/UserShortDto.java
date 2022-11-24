@@ -1,10 +1,10 @@
-package ru.practicum.dto.compilation;
+package ru.practicum.model.dto.user;
 
 import lombok.*;
 
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
-import java.util.List;
+import javax.validation.constraints.PositiveOrZero;
 
 @Getter
 @Setter
@@ -12,10 +12,12 @@ import java.util.List;
 @NoArgsConstructor
 @ToString
 @Builder
-public class NewCompilationDto {
-    private List<Long> events;
-    private Boolean pinned;
+public class UserShortDto {
+    @NotBlank
+    @NotNull
+    @PositiveOrZero
+    private Long id;
     @NotNull
     @NotBlank
-    private String title;
+    private String name;
 }

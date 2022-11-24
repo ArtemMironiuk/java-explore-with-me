@@ -5,10 +5,8 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
-import ru.practicum.dto.compilation.CompilationDto;
-import ru.practicum.dto.compilation.NewCompilationDto;
-import ru.practicum.dto.user.NewUserRequest;
-import ru.practicum.dto.user.UserDto;
+import ru.practicum.model.dto.compilation.CompilationDto;
+import ru.practicum.model.dto.compilation.NewCompilationDto;
 import ru.practicum.service.CompilationService;
 
 import javax.validation.Valid;
@@ -21,8 +19,7 @@ import javax.validation.constraints.PositiveOrZero;
 @Validated
 public class CompilationControllerByAdmin {
 
-    @Autowired
-    private CompilationService compilationService;
+    private final CompilationService compilationService;
 
     @PostMapping
     public CompilationDto createCompilation(@RequestBody @Valid NewCompilationDto newCompilation) {

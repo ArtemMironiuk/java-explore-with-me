@@ -1,4 +1,4 @@
-package ru.practicum.service;
+package ru.practicum.service.impl;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -7,12 +7,13 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import ru.practicum.dto.category.CategoryDto;
-import ru.practicum.dto.category.NewCategoryDto;
+import ru.practicum.model.dto.category.CategoryDto;
+import ru.practicum.model.dto.category.NewCategoryDto;
 import ru.practicum.handler.exception.ObjectNotFoundException;
-import ru.practicum.mapper.CategoryMapper;
+import ru.practicum.utils.mapper.CategoryMapper;
 import ru.practicum.model.Category;
 import ru.practicum.repository.CategoryRepository;
+import ru.practicum.service.CategoryService;
 
 import javax.validation.Valid;
 import java.util.List;
@@ -55,6 +56,7 @@ public class CategoryServiceImpl implements CategoryService {
     @Transactional
     @Override
     public CategoryDto updateCategory(CategoryDto categoryDto) {
+
         Category category = categoryRepository.findById(categoryDto.getId())
                 .orElseThrow(() -> new ObjectNotFoundException("Category c таким id нет в базе"));
         //TODO exception

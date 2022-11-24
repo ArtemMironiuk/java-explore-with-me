@@ -4,12 +4,11 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
-import ru.practicum.dto.user.NewUserRequest;
-import ru.practicum.dto.user.UserDto;
+import ru.practicum.model.dto.user.NewUserRequest;
+import ru.practicum.model.dto.user.UserDto;
 import ru.practicum.service.UserService;
 
 import javax.validation.Valid;
-import javax.validation.constraints.Positive;
 import javax.validation.constraints.PositiveOrZero;
 import java.util.List;
 

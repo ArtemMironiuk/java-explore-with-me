@@ -1,6 +1,5 @@
 package ru.practicum.controller.admin;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
@@ -8,8 +7,8 @@ import javax.validation.constraints.Positive;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import ru.practicum.dto.category.CategoryDto;
-import ru.practicum.dto.category.NewCategoryDto;
+import ru.practicum.model.dto.category.CategoryDto;
+import ru.practicum.model.dto.category.NewCategoryDto;
 import ru.practicum.service.CategoryService;
 
 @RestController
@@ -18,8 +17,7 @@ import ru.practicum.service.CategoryService;
 @RequiredArgsConstructor
 public class CategoryControllerByAdmin {
 
-    @Autowired
-    private CategoryService categoryService;
+    private final CategoryService categoryService;
 
     @PatchMapping
     public CategoryDto updateCategory(@RequestBody @Valid CategoryDto categoryDto) {

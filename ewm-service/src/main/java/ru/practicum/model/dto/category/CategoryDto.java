@@ -1,4 +1,4 @@
-package ru.practicum.dto.category;
+package ru.practicum.model.dto.category;
 
 import lombok.*;
 
@@ -14,7 +14,6 @@ import javax.validation.constraints.PositiveOrZero;
 @Builder
 public class CategoryDto {
     @PositiveOrZero
-    @NotBlank
     private Long id;
     @NotBlank
     @NotNull

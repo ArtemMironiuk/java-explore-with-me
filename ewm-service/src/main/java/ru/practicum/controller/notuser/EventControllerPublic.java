@@ -28,7 +28,7 @@ public class EventControllerPublic {
                                           @RequestParam(name = "from", defaultValue = "0") Integer from,
                                           @RequestParam(name = "size", defaultValue = "10") Integer size) {
         log.info("Получен запрос к эндпоинту GET, /events");
-        return eventService.findEvents(from, size);
+        return eventService.findEvents(text, categories, paid, rangeStart, rangeEnd, onlyAvailable, sort, from, size);
     }
 
     @GetMapping("/{id}")

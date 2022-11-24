@@ -1,4 +1,4 @@
-package ru.practicum.dto;
+package ru.practicum.model.dto;
 
 import lombok.*;
 import ru.practicum.model.State;

@@ -1,6 +1,6 @@
-package ru.practicum.mapper;
+package ru.practicum.utils.mapper;
 
-import ru.practicum.dto.event.EventShortDto;
+import ru.practicum.model.dto.event.EventShortDto;
 import ru.practicum.model.Event;
 
 public class EventMapper {

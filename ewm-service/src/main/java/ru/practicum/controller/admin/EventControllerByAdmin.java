@@ -21,13 +21,13 @@ public class EventControllerByAdmin {
     private final EventService eventService;
 
     @GetMapping
-    public List<EventFullDto> searchEvents(@RequestParam(name ="users") List<Integer> users,
-                                           @RequestParam(name ="states") List<String> states,
-                                           @RequestParam(name ="categories") List<Integer> categories,
-                                           @RequestParam(name ="rangeStart") String rangeStart,
-                                           @RequestParam(name ="rangeEnd") String rangeEnd,
+    public List<EventFullDto> searchEvents(@RequestParam(name = "users") List<Integer> users,
+                                           @RequestParam(name = "states") List<String> states,
+                                           @RequestParam(name = "categories") List<Integer> categories,
+                                           @RequestParam(name = "rangeStart") String rangeStart,
+                                           @RequestParam(name = "rangeEnd") String rangeEnd,
                                            @RequestParam(name = "from", defaultValue = "0") Integer from,
-                                           @RequestParam(name = "size", defaultValue = "10") Integer size){
+                                           @RequestParam(name = "size", defaultValue = "10") Integer size) {
         log.info("Получен запрос к эндпоинту GET, /admin/events");
         return eventService.searchEvents(users, states, categories, rangeStart, rangeEnd, from, size);
     }
@@ -40,12 +40,12 @@ public class EventControllerByAdmin {
     }
 
     @PatchMapping("/{eventId}/publish")
-    public EventFullDto publishingEvent(@PathVariable @PositiveOrZero Long eventId){
+    public EventFullDto publishingEvent(@PathVariable @PositiveOrZero Long eventId) {
         return eventService.publishingEvent(eventId);
     }
 
     @PatchMapping("/{eventId}/reject")
-    public EventFullDto rejectionEvent(@PathVariable @PositiveOrZero Long eventId){
-        return eventService.publishingEvent(eventId);
+    public EventFullDto rejectionEvent(@PathVariable @PositiveOrZero Long eventId) {
+        return eventService.rejectionEvent(eventId);
     }
 }

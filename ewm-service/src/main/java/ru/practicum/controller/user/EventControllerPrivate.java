@@ -6,9 +6,12 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import ru.practicum.model.dto.event.EventFullDto;
 import ru.practicum.model.dto.event.EventShortDto;
+import ru.practicum.model.dto.event.NewEventDto;
+import ru.practicum.model.dto.event.UpdateEventRequestDto;
 import ru.practicum.service.EventService;
 import ru.practicum.service.UserService;
 
+import javax.validation.Valid;
 import javax.validation.constraints.PositiveOrZero;
 import java.util.List;
 
@@ -22,29 +25,38 @@ public class EventControllerPrivate {
     private final EventService eventService;
 
     @GetMapping("/{userId}/events")
-    public List<EventShortDto> findEvents(@PathVariable @PositiveOrZero Long userId,
-                                          @RequestParam(name = "from", defaultValue = "0") Integer from,
-                                          @RequestParam(name = "size", defaultValue = "10") Integer size) {
+    public List<EventShortDto> findEventsOfUser(@PathVariable @PositiveOrZero Long userId,
+                                                @RequestParam(name = "from", defaultValue = "0") Integer from,
+                                                @RequestParam(name = "size", defaultValue = "10") Integer size) {
         log.info("Получен запрос к эндпоинту GET, /users/{userId}/events");
-        return eventService.findEvents(userId);
+        return eventService.findEventsOfUser(userId, from, size);
     }
 
     @PatchMapping("/{userId}/events")
-    public EventFullDto updateUser(@PathVariable @PositiveOrZero Long userId,
-                                   @RequestBody UpdateEventRequest updateEvent) {
+    public EventFullDto updateEvent(@PathVariable @PositiveOrZero Long userId,
+                                    @RequestBody @Valid UpdateEventRequestDto updateEvent) {
         log.info("Получен запрос к эндпоинту PATCH, /users/{userId}/events");
-        return eventService.updateUser(userId, updateEvent);
+        return eventService.updateEvent(userId, updateEvent);
     }
 
-    @PostMapping
-    public UserDto createUser(@RequestBody UserDto userDto) {
-        log.info("Получен запрос к эндпоинту POST, /users");
-        return userService.createUser(userDto);
+    @PostMapping("/{userId}/events")
+    public EventFullDto addNewEvent(@PathVariable @PositiveOrZero Long userId,
+                                    @RequestBody @Valid NewEventDto newEvent) {
+        log.info("Получен запрос к эндпоинту POST, /users/{userId}/events");
+        return eventService.addNewEvent(userId, newEvent);
     }
 
-    @DeleteMapping("/{userId}")
-    public void deleteUser(@PathVariable Long userId) {
-        log.info("Получен запрос к эндпоинту DELETE, /users/{userId}");
-        userService.deleteUser(userId);
+    @GetMapping("/{userId}/events/{eventId}")
+    public EventFullDto findEventOfUser(@PathVariable @PositiveOrZero Long userId,
+                                        @PathVariable @PositiveOrZero Long eventId) {
+        log.info("Получен запрос к эндпоинту GET, /users/{userId}/events/{eventId}");
+        return eventService.findEventOfUser(userId, eventId);
+    }
+
+    @PatchMapping("/{userId}/events/{eventId}")
+    public EventFullDto cancelEventOfUser(@PathVariable @PositiveOrZero Long userId,
+                                          @PathVariable @PositiveOrZero Long eventId) {
+        log.info("Получен запрос к эндпоинту PATCH, /users/{userId}/events/{eventId}");
+        return eventService.cancelEventOfUser(userId, eventId);
     }
 }

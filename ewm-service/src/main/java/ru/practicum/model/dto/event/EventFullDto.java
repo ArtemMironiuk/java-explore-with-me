@@ -23,10 +23,10 @@ public class EventFullDto {
     @NotEmpty
     private CategoryDto category;
     private Integer confirmedRequest;
+    private String createdOn;
     private String description;
     @NotNull
-    @Future
-    private LocalDateTime eventDate;
+    private String eventDate;
     private Long id;
     @NotNull
     @NotEmpty
@@ -37,7 +37,7 @@ public class EventFullDto {
     @NotNull
     private Boolean paid;
     private Integer participantLimit;
-    private LocalDateTime publishedOn;
+    private String publishedOn;
     private Boolean requestModeration;
     private State state;
     @NotNull

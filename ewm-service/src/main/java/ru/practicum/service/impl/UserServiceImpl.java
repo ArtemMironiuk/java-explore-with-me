@@ -25,8 +25,7 @@ import static java.util.stream.Collectors.toList;
 @RequiredArgsConstructor
 public class UserServiceImpl implements UserService {
 
-    @Autowired
-    private UserRepository userRepository;
+    private final UserRepository userRepository;
 
     @Transactional
     @Override
@@ -41,7 +40,6 @@ public class UserServiceImpl implements UserService {
         for (long id: ids) {
             User user = userRepository.findById(id)
                     .orElseThrow(() -> new ObjectNotFoundException("Нет такого пользователя!"));
-            //TODO exception
             users.add(user);
         }
         return users

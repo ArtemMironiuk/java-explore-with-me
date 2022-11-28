@@ -7,6 +7,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ru.practicum.handler.exception.ObjectNotFoundException;
+import ru.practicum.handler.exception.ValidationException;
 import ru.practicum.model.*;
 import ru.practicum.model.dto.event.*;
 import ru.practicum.repository.CategoryRepository;
@@ -16,6 +17,7 @@ import ru.practicum.repository.UserRepository;
 import ru.practicum.service.EventService;
 import ru.practicum.utils.mapper.EventMapper;
 
+import java.time.Duration;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
@@ -86,13 +88,26 @@ public class EventServiceImpl implements EventService {
 
     @Override
     public EventFullDto publishingEvent(Long eventId) {
-        return null;
+        Event event = eventRepository.findById(eventId)
+                .orElseThrow(() -> new ObjectNotFoundException("Нет такого события!"));
+        Duration duration = Duration.between(event.getPublishedOn(),event.getEventDate());
+        if (duration.toMinutes() >= 60l) {
+            if (event.getState().equals(State.PENDING)) {
+                event.setState(State.PUBLISHED);
+                return EventMapper.toEventFullDto(eventRepository.save(event));
+            }
+            throw new ValidationException("У события нет состояния ожидания публикации!");
+        }
+        throw new ValidationException("Дата начала события должна быть не ранее чем за час от даты публикации");
     }
 
     @Override
     public EventFullDto rejectionEvent(Long eventId) {
         Event event = eventRepository.findById(eventId)
                 .orElseThrow(() -> new ObjectNotFoundException("Нет такого события!"));
+        if (event.getState().equals(State.PUBLISHED)) {
+            throw new ValidationException("Статус события - PUBLISHED!");
+        }
         event.setState(State.CANCELED);
         return EventMapper.toEventFullDto(eventRepository.save(event));
     }
@@ -101,11 +116,13 @@ public class EventServiceImpl implements EventService {
     public List<EventShortDto> findEvents(String text, List<Integer> categories, Boolean paid,
                                           String rangeStart, String rangeEnd, Boolean onlyAvailable,
                                           String sort, Integer from, Integer size) {
+        //TODO сертвис статистики
         return null;
     }
 
     @Override
     public EventFullDto findEventById(Long id) {
+        //TODO сертвис статистики
         return null;
     }
 

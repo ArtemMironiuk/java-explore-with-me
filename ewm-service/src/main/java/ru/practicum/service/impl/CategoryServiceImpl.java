@@ -26,8 +26,7 @@ import static java.util.stream.Collectors.toList;
 @RequiredArgsConstructor
 public class CategoryServiceImpl implements CategoryService {
 
-    @Autowired
-    private CategoryRepository categoryRepository;
+    private final CategoryRepository categoryRepository;
 
     @Override
     public List<CategoryDto> findCategories(Integer from, Integer size) {

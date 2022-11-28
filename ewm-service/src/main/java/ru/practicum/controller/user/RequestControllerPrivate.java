@@ -31,7 +31,7 @@ public class RequestControllerPrivate {
                                                  @PathVariable @PositiveOrZero Long eventId,
                                                  @PathVariable @PositiveOrZero Long reqId) {
         log.info("Получен запрос к эндпоинту PATCH, /users/{userId}/events/{eventId}/requests/{reqId}/reject");
-        return requestService.confirmRequest(userId, eventId, reqId);
+        return requestService.rejectRequest(userId, eventId, reqId);
     }
 
     @GetMapping("/{userId}/requests")

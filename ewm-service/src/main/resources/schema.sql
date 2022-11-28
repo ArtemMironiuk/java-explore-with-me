@@ -26,7 +26,7 @@ CREATE TABLE IF NOT EXISTS locations (
     lat FLOAT NOT NULL,
     lon FLOAT NOT NULL,
 
-    CONSTRAINT pk_user PRIMARY KEY (id)
+    CONSTRAINT pk_location PRIMARY KEY (id)
 );
 
 CREATE TABLE IF NOT EXISTS events (

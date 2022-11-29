@@ -1,9 +1,11 @@
 package ru.practicum.utils.mapper;
 
+import ru.practicum.model.*;
 import ru.practicum.model.dto.event.EventFullDto;
 import ru.practicum.model.dto.event.EventShortDto;
-import ru.practicum.model.Event;
+import ru.practicum.model.dto.event.NewEventDto;
 
+import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 
 public class EventMapper {
@@ -18,7 +20,6 @@ public class EventMapper {
                 .initiator(UserMapper.toUserShortDto(event.getInitiator()))
                 .paid(event.getPaid())
                 .title(event.getTitle())
-                .views(event.getViews())
                 .build();
     }
 
@@ -42,7 +43,23 @@ public class EventMapper {
                 .requestModeration(event.getRequestModeration())
                 .state(event.getState())
                 .title(event.getTitle())
-                .views(event.getViews())
+                .build();
+    }
+
+    public static Event toEvent(User user, Location location, Category category, NewEventDto newEvent) {
+        return Event.builder()
+                .annotation(newEvent.getAnnotation())
+                .category(category)
+                .createdOn(LocalDateTime.now().withNano(0))
+                .description(newEvent.getDescription())
+                .eventDate(LocalDateTime.parse(newEvent.getEventDate(), formatter))
+                .initiator(user)
+                .location(location)
+                .paid(newEvent.getPaid())
+                .participantLimit(newEvent.getParticipantLimit())
+                .requestModeration(newEvent.getRequestModeration())
+                .state(State.PENDING)
+                .title(newEvent.getTitle())
                 .build();
     }
 }

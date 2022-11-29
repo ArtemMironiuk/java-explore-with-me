@@ -1,5 +1,6 @@
 package ru.practicum.model;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -65,8 +66,6 @@ public class Event {
     @Column(name = "event_state")
     @Enumerated(EnumType.STRING)
     private State state;
-    @Column(name = "views")
-    private Integer views;
     @NotBlank
     @NotNull
     @OneToOne

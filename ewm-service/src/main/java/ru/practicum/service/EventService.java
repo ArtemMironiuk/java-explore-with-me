@@ -1,11 +1,13 @@
 package ru.practicum.service;
 
+import ru.practicum.model.State;
 import ru.practicum.model.dto.event.*;
 
 import java.util.List;
 
 public interface EventService {
-    List<EventFullDto> searchEvents(List<Integer> users, List<String> states, List<Integer> categories, String rangeStart, String rangeEnd, Integer from, Integer size);
+
+    List<EventFullDto> searchEvents(Long[] users, State[] states, Long[] categories, String rangeStart, String rangeEnd, Integer from, Integer size);
 
     EventFullDto updateEventRequest(Long eventId, AdminUpdateEventRequest eventRequest);
 
@@ -26,5 +28,4 @@ public interface EventService {
     EventFullDto findEventOfUser(Long userId, Long eventId);
 
     EventFullDto cancelEventOfUser(Long userId, Long eventId);
-
 }

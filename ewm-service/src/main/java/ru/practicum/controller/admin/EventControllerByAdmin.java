@@ -4,6 +4,8 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
+import ru.practicum.handler.exception.ValidationException;
+import ru.practicum.model.State;
 import ru.practicum.model.dto.event.AdminUpdateEventRequest;
 import ru.practicum.model.dto.event.EventFullDto;
 import ru.practicum.service.EventService;
@@ -21,15 +23,24 @@ public class EventControllerByAdmin {
     private final EventService eventService;
 
     @GetMapping
-    public List<EventFullDto> searchEvents(@RequestParam(name = "users") List<Integer> users,
-                                           @RequestParam(name = "states") List<String> states,
-                                           @RequestParam(name = "categories") List<Integer> categories,
+    public List<EventFullDto> searchEvents(@RequestParam(name = "users") Long[] users,
+                                           @RequestParam(name = "states") String[] states,
+                                           @RequestParam(name = "categories") Long[] categories,
                                            @RequestParam(name = "rangeStart") String rangeStart,
                                            @RequestParam(name = "rangeEnd") String rangeEnd,
                                            @RequestParam(name = "from", defaultValue = "0") Integer from,
                                            @RequestParam(name = "size", defaultValue = "10") Integer size) {
         log.info("Получен запрос к эндпоинту GET, /admin/events");
-        return eventService.searchEvents(users, states, categories, rangeStart, rangeEnd, from, size);
+        try {
+            State[] stateNew = new State[3];
+            for (int i = 0; i < states.length; i++) {
+                State state = State.valueOf(states[i]);
+                stateNew[i] = state;
+            }
+            return eventService.searchEvents(users, stateNew, categories, rangeStart, rangeEnd, from, size);
+        } catch (IllegalArgumentException e) {
+            throw new ValidationException("Unknown state: UNSUPPORTED_STATUS");
+        }
     }
 
     @PutMapping("/{eventId}")

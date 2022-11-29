@@ -2,7 +2,8 @@ package ru.practicum.service.impl;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ru.practicum.model.dto.user.NewUserRequest;
@@ -14,7 +15,6 @@ import ru.practicum.repository.UserRepository;
 import ru.practicum.service.UserService;
 
 import javax.validation.Valid;
-import java.util.ArrayList;
 import java.util.List;
 
 import static java.util.stream.Collectors.toList;
@@ -36,13 +36,8 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public List<UserDto> findUsers(long[] ids, Integer from, Integer size) {
-        List<User> users = new ArrayList<>();
-        for (long id: ids) {
-            User user = userRepository.findById(id)
-                    .orElseThrow(() -> new ObjectNotFoundException("Нет такого пользователя!"));
-            users.add(user);
-        }
-        return users
+        Pageable pageable = PageRequest.of(from / size, size);
+        return userRepository.findUserByIds(ids, pageable)
                 .stream()
                 .map(UserMapper::toUserDto)
                 .collect(toList());

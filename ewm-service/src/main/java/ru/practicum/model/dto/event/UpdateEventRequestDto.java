@@ -1,5 +1,6 @@
 package ru.practicum.model.dto.event;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.*;
 
 import javax.validation.constraints.Future;
@@ -21,6 +22,7 @@ public class UpdateEventRequestDto {
     @Size(min = 20, max = 7000)
     private String description;
     @Future
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd-MM-yyyy hh:mm:ss")
     private LocalDateTime eventDate;
     @PositiveOrZero
     @NotNull

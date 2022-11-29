@@ -18,6 +18,13 @@ public class RequestControllerPrivate {
 
     private final RequestService requestService;
 
+    @GetMapping("/{userId}/events/{eventId}/requests")
+    public ParticipationRequestDto findRequestsOfUser(@PathVariable @PositiveOrZero Long userId,
+                                                      @PathVariable @PositiveOrZero Long eventId) {
+        log.info("Получен запрос к эндпоинту GET, /users/{userId}/requests");
+        return requestService.findRequestsOfUser(userId,eventId);
+    }
+
     @PatchMapping("/{userId}/events/{eventId}/requests/{reqId}/confirm")
     public ParticipationRequestDto confirmRequest(@PathVariable @PositiveOrZero Long userId,
                                                   @PathVariable @PositiveOrZero Long eventId,
@@ -35,9 +42,9 @@ public class RequestControllerPrivate {
     }
 
     @GetMapping("/{userId}/requests")
-    public ParticipationRequestDto findRequestsOfUser(@PathVariable @PositiveOrZero Long userId) {
+    public ParticipationRequestDto findRequestsOfUserFromOtherEvents(@PathVariable @PositiveOrZero Long userId) {
         log.info("Получен запрос к эндпоинту GET, /users/{userId}/requests");
-        return requestService.findRequestsOfUser(userId);
+        return requestService.findRequestsOfUserFromOtherEvents(userId);
     }
 
     @PostMapping("/{userId}/requests")

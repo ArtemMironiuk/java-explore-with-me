@@ -39,9 +39,15 @@ public class EventServiceImpl implements EventService {
 
 
     @Override
-    public List<EventFullDto> searchEvents(List<Integer> users, List<String> states, List<Integer> categories,
-                                           String rangeStart, String rangeEnd, Integer from, Integer size) {
-        return null;
+    public List<EventFullDto> searchEvents(Long[] users, State[] states, Long[] categories, String rangeStart,
+                                           String rangeEnd, Integer from, Integer size) {
+        Pageable pageable = PageRequest.of(from / size, size);
+        LocalDateTime start = LocalDateTime.parse(rangeStart, formatter);
+        LocalDateTime end = LocalDateTime.parse(rangeEnd, formatter);
+        return eventRepository.searchEvent(users, states, categories, start, end, pageable)
+                .stream()
+                .map(EventMapper::toEventFullDto)
+                .collect(toList());
     }
 
     @Override
@@ -90,10 +96,11 @@ public class EventServiceImpl implements EventService {
     public EventFullDto publishingEvent(Long eventId) {
         Event event = eventRepository.findById(eventId)
                 .orElseThrow(() -> new ObjectNotFoundException("Нет такого события!"));
-        Duration duration = Duration.between(event.getPublishedOn(),event.getEventDate());
-        if (duration.toMinutes() >= 60l) {
+        Duration duration = Duration.between(LocalDateTime.now(), event.getEventDate());
+        if (duration.toMinutes() >= 60) {
             if (event.getState().equals(State.PENDING)) {
                 event.setState(State.PUBLISHED);
+                event.setPublishedOn(LocalDateTime.now().withNano(0));
                 return EventMapper.toEventFullDto(eventRepository.save(event));
             }
             throw new ValidationException("У события нет состояния ожидания публикации!");
@@ -139,21 +146,80 @@ public class EventServiceImpl implements EventService {
 
     @Override
     public EventFullDto updateEvent(Long userId, UpdateEventRequestDto updateEvent) {
-        return null;
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new ObjectNotFoundException("Нет такого пользователя!"));
+        Event event = eventRepository.findById(updateEvent.getEventId())
+                .orElseThrow(() -> new ObjectNotFoundException("Нет такого события!"));
+        Duration duration = Duration.between(LocalDateTime.now().withNano(0), event.getEventDate());
+        if (duration.toMinutes() >= 120) {
+            if (event.getState().equals(State.CANCELED) || event.getRequestModeration() == true) {
+                if (event.getState().equals(State.CANCELED)) {
+                    event.setRequestModeration(true);
+                }
+                if (updateEvent.getAnnotation() != null && !updateEvent.getAnnotation().isEmpty()) {
+                    event.setAnnotation(updateEvent.getAnnotation());
+                }
+                if (updateEvent.getCategory() != null && updateEvent.getCategory() > 0) {
+                    Category category = categoryRepository.findById(Long.valueOf(updateEvent.getCategory()))
+                            .orElseThrow(() -> new ObjectNotFoundException("Нет такой категории!"));
+                    event.setCategory(category);
+                }
+                if (updateEvent.getDescription() != null && !updateEvent.getDescription().isEmpty()) {
+                    event.setDescription(updateEvent.getDescription());
+                }
+                if (updateEvent.getEventDate() != null) {
+                    event.setEventDate(updateEvent.getEventDate());
+                }
+                if (updateEvent.getPaid() != null) {
+                    event.setPaid(updateEvent.getPaid());
+                }
+                if (updateEvent.getParticipantLimit() != null) {
+                    event.setParticipantLimit(updateEvent.getParticipantLimit());
+                }
+                if (updateEvent.getTitle() != null) {
+                    event.setTitle(updateEvent.getTitle());
+                }
+                return EventMapper.toEventFullDto(eventRepository.save(event));
+            }
+            throw new ValidationException("Событие либо опубликовано, либо не находится в состоянии ожидания модерации");
+        }
+        throw new ValidationException("Событие начнется менее чем через 2 часа");
     }
 
     @Override
     public EventFullDto addNewEvent(Long userId, NewEventDto newEvent) {
-        return null;
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new ObjectNotFoundException("Нет такого пользователя!"));
+        Category category = categoryRepository.findById(Long.valueOf(newEvent.getCategory()))
+                .orElseThrow(() -> new ObjectNotFoundException("Нет такой категории!"));
+        Location location = locationRepository.save(newEvent.getLocation());
+        Event event = EventMapper.toEvent(user, location, category, newEvent);
+        return EventMapper.toEventFullDto(eventRepository.save(event));
     }
 
     @Override
     public EventFullDto findEventOfUser(Long userId, Long eventId) {
-        return null;
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new ObjectNotFoundException("Нет такого пользователя!"));
+        Event event = eventRepository.findById(eventId)
+                .orElseThrow(() -> new ObjectNotFoundException("Нет такого события!"));
+        if (event.getInitiator().getId() != userId) {
+            throw new ValidationException("Пользователь не добавлял это событие!");
+        }
+        return EventMapper.toEventFullDto(event);
     }
 
     @Override
     public EventFullDto cancelEventOfUser(Long userId, Long eventId) {
-        return null;
+        Event event = eventRepository.findById(eventId)
+                .orElseThrow(() -> new ObjectNotFoundException("Нет такого события!"));
+        if (event.getInitiator().getId() != userId) {
+            throw new ValidationException("Пользователь не добавлял это событие!");
+        }
+        if (event.getRequestModeration() != true) {
+            throw new ValidationException("Событие уже отмодерировано!");
+        }
+        event.setState(State.CANCELED);
+        return EventMapper.toEventFullDto(eventRepository.save(event));
     }
 }

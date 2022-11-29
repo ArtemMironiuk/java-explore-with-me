@@ -23,8 +23,8 @@ public class NewEventDto {
     @NotBlank
     @Size(min = 20, max = 7000)
     private String description;
-    @Future
-    private LocalDateTime eventDate;
+    @NotNull
+    private String eventDate;
     @NotNull
     @NotEmpty
     private Location location;

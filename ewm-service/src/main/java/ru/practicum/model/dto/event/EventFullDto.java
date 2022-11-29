@@ -43,7 +43,5 @@ public class EventFullDto {
     @NotNull
     @NotBlank
     private String title;
-    @NotNull
-    @PositiveOrZero
     private Integer views;
 }

@@ -14,6 +14,7 @@ import org.springframework.web.method.annotation.MethodArgumentTypeMismatchExcep
 import org.springframework.web.servlet.NoHandlerFoundException;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
 import ru.practicum.handler.exception.ObjectNotFoundException;
+import ru.practicum.handler.exception.ValidationException;
 
 import javax.validation.ConstraintViolationException;
 
@@ -73,6 +74,15 @@ public class ErrorHandler extends ResponseEntityExceptionHandler {
         return ResponseEntityBuilder.build(apiError);
     }
 
+    @ExceptionHandler(ValidationException.class)
+    public ResponseEntity<Object> handleNotFound(ValidationException ex) {
+        log.info("404 {}", ex.getMessage(), ex);
+        ApiError error = new ApiError(HttpStatus.BAD_REQUEST);
+        error.setMessage(ex.getMessage());
+        error.setReason("Условия не выполнены.");
+        return ResponseEntityBuilder.build(error);
+    }
+
     /**
      * ObjectNotFoundException сработает, когда необходимый объект не будет найден.
      */
@@ -108,7 +118,7 @@ public class ErrorHandler extends ResponseEntityExceptionHandler {
         ApiError apiError = new ApiError(HttpStatus.BAD_REQUEST);
         apiError.setMessage(String.format("Параметр '%s' со значением '%s' не может быть преобразован в тип '%s'",
                 ex.getName(), ex.getValue(), ex.getRequiredType().getSimpleName()));
-        apiError.setReason(ex.getMessage());
+        apiError.setReason(ex.getClass().getName());
         return ResponseEntityBuilder.build(apiError);
     }
 

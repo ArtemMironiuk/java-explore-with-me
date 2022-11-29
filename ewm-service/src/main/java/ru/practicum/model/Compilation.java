@@ -10,6 +10,7 @@ import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.PositiveOrZero;
 import java.util.List;
+import java.util.Set;
 
 @Data
 @AllArgsConstructor
@@ -20,9 +21,9 @@ import java.util.List;
 public class Compilation {
 
     @NotNull
-    @OneToMany
+    @OneToMany()
     @JoinColumn(name = "event_id")
-    private List<Event> events;
+    private Set<Event> events;
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id")

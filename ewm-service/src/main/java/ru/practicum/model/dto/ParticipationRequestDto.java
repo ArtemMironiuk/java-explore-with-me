@@ -15,6 +15,6 @@ public class ParticipationRequestDto {
     private LocalDateTime created;
     private Long event;
     private Long id;
-    private Integer requester;
+    private Long requester;
     private State status;
 }

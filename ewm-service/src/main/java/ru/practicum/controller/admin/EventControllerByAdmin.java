@@ -5,7 +5,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import ru.practicum.handler.exception.ValidationException;
-import ru.practicum.model.State;
+import ru.practicum.model.StateEvent;
 import ru.practicum.model.dto.event.AdminUpdateEventRequest;
 import ru.practicum.model.dto.event.EventFullDto;
 import ru.practicum.service.EventService;
@@ -32,12 +32,12 @@ public class EventControllerByAdmin {
                                            @RequestParam(name = "size", defaultValue = "10") Integer size) {
         log.info("Получен запрос к эндпоинту GET, /admin/events");
         try {
-            State[] stateNew = new State[3];
+            StateEvent[] stateEventNew = new StateEvent[3];
             for (int i = 0; i < states.length; i++) {
-                State state = State.valueOf(states[i]);
-                stateNew[i] = state;
+                StateEvent stateEvent = StateEvent.valueOf(states[i]);
+                stateEventNew[i] = stateEvent;
             }
-            return eventService.searchEvents(users, stateNew, categories, rangeStart, rangeEnd, from, size);
+            return eventService.searchEvents(users, stateEventNew, categories, rangeStart, rangeEnd, from, size);
         } catch (IllegalArgumentException e) {
             throw new ValidationException("Unknown state: UNSUPPORTED_STATUS");
         }

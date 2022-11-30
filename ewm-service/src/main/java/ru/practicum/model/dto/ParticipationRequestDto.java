@@ -1,7 +1,8 @@
 package ru.practicum.model.dto;
 
 import lombok.*;
-import ru.practicum.model.State;
+import ru.practicum.model.StateEvent;
+import ru.practicum.model.StateRequest;
 
 import java.time.LocalDateTime;
 
@@ -16,5 +17,5 @@ public class ParticipationRequestDto {
     private Long event;
     private Long id;
     private Long requester;
-    private State status;
+    private StateRequest status;
 }

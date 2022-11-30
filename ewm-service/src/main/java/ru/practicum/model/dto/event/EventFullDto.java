@@ -4,10 +4,9 @@ import lombok.*;
 import ru.practicum.model.dto.category.CategoryDto;
 import ru.practicum.model.dto.user.UserShortDto;
 import ru.practicum.model.Location;
-import ru.practicum.model.State;
+import ru.practicum.model.StateEvent;
 
 import javax.validation.constraints.*;
-import java.time.LocalDateTime;
 
 @Getter
 @Setter
@@ -39,7 +38,7 @@ public class EventFullDto {
     private Integer participantLimit;
     private String publishedOn;
     private Boolean requestModeration;
-    private State state;
+    private StateEvent stateEvent;
     @NotNull
     @NotBlank
     private String title;

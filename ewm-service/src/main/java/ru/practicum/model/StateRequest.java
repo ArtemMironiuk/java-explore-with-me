@@ -1,7 +1,8 @@
 package ru.practicum.model;
 
-public enum State {
+public enum StateRequest {
     PENDING,
-    PUBLISHED,
+    CONFIRMED,
+    REJECTED,
     CANCELED
 }

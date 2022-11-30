@@ -1,6 +1,5 @@
 package ru.practicum.model;
 
-import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -65,7 +64,7 @@ public class Event {
     private LocalDateTime publishedOn;
     @Column(name = "event_state")
     @Enumerated(EnumType.STRING)
-    private State state;
+    private StateEvent stateEvent;
     @NotBlank
     @NotNull
     @OneToOne

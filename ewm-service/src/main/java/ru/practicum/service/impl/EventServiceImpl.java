@@ -39,12 +39,12 @@ public class EventServiceImpl implements EventService {
 
 
     @Override
-    public List<EventFullDto> searchEvents(Long[] users, State[] states, Long[] categories, String rangeStart,
+    public List<EventFullDto> searchEvents(Long[] users, StateEvent[] stateEvents, Long[] categories, String rangeStart,
                                            String rangeEnd, Integer from, Integer size) {
         Pageable pageable = PageRequest.of(from / size, size);
         LocalDateTime start = LocalDateTime.parse(rangeStart, formatter);
         LocalDateTime end = LocalDateTime.parse(rangeEnd, formatter);
-        return eventRepository.searchEvent(users, states, categories, start, end, pageable)
+        return eventRepository.searchEvent(users, stateEvents, categories, start, end, pageable)
                 .stream()
                 .map(EventMapper::toEventFullDto)
                 .collect(toList());
@@ -98,8 +98,8 @@ public class EventServiceImpl implements EventService {
                 .orElseThrow(() -> new ObjectNotFoundException("Нет такого события!"));
         Duration duration = Duration.between(LocalDateTime.now(), event.getEventDate());
         if (duration.toMinutes() >= 60) {
-            if (event.getState().equals(State.PENDING)) {
-                event.setState(State.PUBLISHED);
+            if (event.getStateEvent().equals(StateEvent.PENDING)) {
+                event.setStateEvent(StateEvent.PUBLISHED);
                 event.setPublishedOn(LocalDateTime.now().withNano(0));
                 return EventMapper.toEventFullDto(eventRepository.save(event));
             }
@@ -112,10 +112,10 @@ public class EventServiceImpl implements EventService {
     public EventFullDto rejectionEvent(Long eventId) {
         Event event = eventRepository.findById(eventId)
                 .orElseThrow(() -> new ObjectNotFoundException("Нет такого события!"));
-        if (event.getState().equals(State.PUBLISHED)) {
+        if (event.getStateEvent().equals(StateEvent.PUBLISHED)) {
             throw new ValidationException("Статус события - PUBLISHED!");
         }
-        event.setState(State.CANCELED);
+        event.setStateEvent(StateEvent.CANCELED);
         return EventMapper.toEventFullDto(eventRepository.save(event));
     }
 
@@ -123,6 +123,7 @@ public class EventServiceImpl implements EventService {
     public List<EventShortDto> findEvents(String text, List<Integer> categories, Boolean paid,
                                           String rangeStart, String rangeEnd, Boolean onlyAvailable,
                                           String sort, Integer from, Integer size) {
+        Pageable pageable = PageRequest.of(from / size, size);
         //TODO сертвис статистики
         return null;
     }
@@ -152,8 +153,8 @@ public class EventServiceImpl implements EventService {
                 .orElseThrow(() -> new ObjectNotFoundException("Нет такого события!"));
         Duration duration = Duration.between(LocalDateTime.now().withNano(0), event.getEventDate());
         if (duration.toMinutes() >= 120) {
-            if (event.getState().equals(State.CANCELED) || event.getRequestModeration() == true) {
-                if (event.getState().equals(State.CANCELED)) {
+            if (event.getStateEvent().equals(StateEvent.CANCELED) || event.getRequestModeration() == true) {
+                if (event.getStateEvent().equals(StateEvent.CANCELED)) {
                     event.setRequestModeration(true);
                 }
                 if (updateEvent.getAnnotation() != null && !updateEvent.getAnnotation().isEmpty()) {
@@ -219,7 +220,7 @@ public class EventServiceImpl implements EventService {
         if (event.getRequestModeration() != true) {
             throw new ValidationException("Событие уже отмодерировано!");
         }
-        event.setState(State.CANCELED);
+        event.setStateEvent(StateEvent.CANCELED);
         return EventMapper.toEventFullDto(eventRepository.save(event));
     }
 }

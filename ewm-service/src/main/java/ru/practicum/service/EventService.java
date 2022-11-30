@@ -1,13 +1,13 @@
 package ru.practicum.service;
 
-import ru.practicum.model.State;
+import ru.practicum.model.StateEvent;
 import ru.practicum.model.dto.event.*;
 
 import java.util.List;
 
 public interface EventService {
 
-    List<EventFullDto> searchEvents(Long[] users, State[] states, Long[] categories, String rangeStart, String rangeEnd, Integer from, Integer size);
+    List<EventFullDto> searchEvents(Long[] users, StateEvent[] stateEvents, Long[] categories, String rangeStart, String rangeEnd, Integer from, Integer size);
 
     EventFullDto updateEventRequest(Long eventId, AdminUpdateEventRequest eventRequest);
 

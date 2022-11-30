@@ -8,6 +8,7 @@ import ru.practicum.model.dto.ParticipationRequestDto;
 import ru.practicum.service.RequestService;
 
 import javax.validation.constraints.PositiveOrZero;
+import java.util.List;
 
 @RestController
 @RequestMapping(path = "/users")
@@ -19,10 +20,10 @@ public class RequestControllerPrivate {
     private final RequestService requestService;
 
     @GetMapping("/{userId}/events/{eventId}/requests")
-    public ParticipationRequestDto findRequestsOfUser(@PathVariable @PositiveOrZero Long userId,
-                                                      @PathVariable @PositiveOrZero Long eventId) {
+    public List<ParticipationRequestDto> findRequestsOfUser(@PathVariable @PositiveOrZero Long userId,
+                                                            @PathVariable @PositiveOrZero Long eventId) {
         log.info("Получен запрос к эндпоинту GET, /users/{userId}/requests");
-        return requestService.findRequestsOfUser(userId,eventId);
+        return requestService.findRequestsOfUser(userId, eventId);
     }
 
     @PatchMapping("/{userId}/events/{eventId}/requests/{reqId}/confirm")
@@ -42,7 +43,7 @@ public class RequestControllerPrivate {
     }
 
     @GetMapping("/{userId}/requests")
-    public ParticipationRequestDto findRequestsOfUserFromOtherEvents(@PathVariable @PositiveOrZero Long userId) {
+    public List<ParticipationRequestDto> findRequestsOfUserFromOtherEvents(@PathVariable @PositiveOrZero Long userId) {
         log.info("Получен запрос к эндпоинту GET, /users/{userId}/requests");
         return requestService.findRequestsOfUserFromOtherEvents(userId);
     }

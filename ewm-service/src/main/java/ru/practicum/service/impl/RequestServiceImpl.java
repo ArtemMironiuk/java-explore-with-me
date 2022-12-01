@@ -26,7 +26,6 @@ public class RequestServiceImpl implements RequestService {
 
     private final RequestRepository requestRepository;
     private final EventRepository eventRepository;
-
     private final UserRepository userRepository;
 
     @Override
@@ -105,7 +104,7 @@ public class RequestServiceImpl implements RequestService {
 
     @Override
     public ParticipationRequestDto cancelRequest(Long userId, Long requestId) {
-        Request request = requestRepository.findByIdAAndRequesterId(requestId, userId)
+        Request request = requestRepository.findByIdAndRequesterId(requestId, userId)
                 .orElseThrow(() -> new ObjectNotFoundException("Нет такой заявки!"));
         request.setStatus(StateRequest.CANCELED);
         return RequestMapper.toParticipationRequestDto(requestRepository.save(request));

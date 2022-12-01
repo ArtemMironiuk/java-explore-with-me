@@ -8,10 +8,11 @@ import ru.practicum.model.Event;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 
 public class CompilationMapper {
 
-    public static Compilation toCompilation(NewCompilationDto newCompilation, List<Event> events) {
+    public static Compilation toCompilation(NewCompilationDto newCompilation, Set<Event> events) {
         if(newCompilation.getPinned() == null) {
             newCompilation.setPinned(false);
         }

@@ -1,19 +1,18 @@
 package ru.practicum.client;
 
-import io.micrometer.core.lang.Nullable;
-import lombok.RequiredArgsConstructor;
-import org.springframework.http.HttpEntity;
-import org.springframework.http.HttpMethod;
-import org.springframework.http.ResponseEntity;
+import org.springframework.http.*;
+import org.springframework.lang.Nullable;
 import org.springframework.web.client.HttpStatusCodeException;
 import org.springframework.web.client.RestTemplate;
 
 import java.util.Map;
 
-@RequiredArgsConstructor
 public class BaseClient {
 
     protected final RestTemplate rest;
+    public BaseClient(RestTemplate rest) {
+        this.rest = rest;
+    }
 
     protected ResponseEntity<Object> get(String path, @Nullable Map<String, Object> parameters) {
         return makeAndSendRequest(HttpMethod.GET, path, parameters, null);

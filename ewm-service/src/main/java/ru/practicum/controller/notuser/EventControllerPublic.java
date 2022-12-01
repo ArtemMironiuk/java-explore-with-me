@@ -4,8 +4,6 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.reactive.function.client.WebClient;
-import ru.practicum.client.EndpointHit;
 import ru.practicum.model.dto.event.EventFullDto;
 import ru.practicum.model.dto.event.EventShortDto;
 import ru.practicum.service.EventService;
@@ -23,8 +21,6 @@ public class EventControllerPublic {
 
     private final EventService eventService;
 
-    private final WebClient webClient;
-
     @GetMapping
     public List<EventShortDto> findEvents(@RequestParam(name = "text") String text,
                                           @RequestParam(name ="categories") List<Integer> categories,
@@ -37,22 +33,12 @@ public class EventControllerPublic {
                                           @RequestParam(name = "size", defaultValue = "10") Integer size,
                                           HttpServletRequest request) {
         log.info("Получен запрос к эндпоинту GET, /events");
-        webClient
-                .post()
-                .uri("/hit")
-                .body(new EndpointHit("nsdasd",request.getRequestURI(),request.getRemoteAddr()), EndpointHit.class)
-                .retrieve();
-        return eventService.findEvents(text, categories, paid, rangeStart, rangeEnd, onlyAvailable, sort, from, size);
+        return eventService.findEvents(text, categories, paid, rangeStart, rangeEnd, onlyAvailable, sort, from, size, request);
     }
 
     @GetMapping("/{id}")
     public EventFullDto findEventById(@PathVariable @PositiveOrZero Long id, HttpServletRequest request) {
         log.info("Получен запрос к эндпоинту GET, /events/id");
-        webClient
-                .post()
-                .uri("/hit")
-                .body()
-                .retrieve();
-        return eventService.findEventById(id);
+        return eventService.findEventById(id, request);
     }
 }

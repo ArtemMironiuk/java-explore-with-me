@@ -33,4 +33,6 @@ public interface EventRepository extends JpaRepository<Event, Long> {
                             Pageable pageable);
 
     Optional<Event> findByIdAndAndInitiator_Id(Long eventId, Long userId);
+
+    Optional<Event> findByIdAndStateEvent(Long eventId, StateEvent state);
 }

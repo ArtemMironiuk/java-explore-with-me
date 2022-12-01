@@ -4,10 +4,10 @@ import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import ru.practicum.model.EndpointHit;
-import ru.practicum.model.EndpointHitDto;
+import ru.practicum.model.Statistic;
+import ru.practicum.model.dto.EndpointHitDto;
 import ru.practicum.model.EndpointStatsMapper;
-import ru.practicum.model.ViewStats;
+import ru.practicum.model.dto.ViewStats;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -21,10 +21,10 @@ public class StatsServiceImpl implements StatsService {
     private StatsServiceRepository statsServiceRepository;
 
     @Override
-    public EndpointHit save(EndpointHitDto endpointHitDto) {
+    public Statistic save(EndpointHitDto endpointHitDto) {
 
-        EndpointHit endpointHit = EndpointStatsMapper.toEndpointHit(endpointHitDto);
-        return statsServiceRepository.save(endpointHit);
+        Statistic statistic = EndpointStatsMapper.toEndpointHit(endpointHitDto);
+        return statsServiceRepository.save(statistic);
     }
 
     @Override

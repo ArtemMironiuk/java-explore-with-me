@@ -6,28 +6,26 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
-import javax.validation.constraints.PositiveOrZero;
 
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
 @Entity
-@Table(name = "hits")
-public class EndpointHit {
+@Table(name = "statistics")
+public class Statistic {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id")
     private Long id;
+    @Column(name = "app")
     private String app;
+    @Column(name = "uri")
     private String uri;
+    @Column(name = "ip")
     private String ip;
+    @Column(name = "timestamp")
     private String timestamp;
 
-    public EndpointHit(String app, String uri, String ip) {
-        this.app = app;
-        this.uri = uri;
-        this.ip = ip;
-    }
 }

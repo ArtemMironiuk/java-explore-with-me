@@ -1,4 +1,4 @@
-package ru.practicum.model;
+package ru.practicum.model.dto;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.*;
@@ -21,6 +21,5 @@ public class EndpointHitDto {
     @NotBlank
     private String ip;
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
-    @NotNull
     private LocalDateTime timestamp;
 }

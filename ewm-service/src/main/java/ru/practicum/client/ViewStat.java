@@ -5,17 +5,13 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import javax.validation.constraints.NotBlank;
-
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-public class EndpointHit {
-    @NotBlank
+public class ViewStat {
     private String app;
-    @NotBlank
     private String uri;
-    @NotBlank
-    private String ip;
+    private Long hits;
+
 }

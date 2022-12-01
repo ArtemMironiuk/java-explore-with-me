@@ -18,7 +18,9 @@ import ru.practicum.repository.EventRepository;
 import ru.practicum.service.CompilationService;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import static java.util.stream.Collectors.toList;
 
@@ -36,7 +38,7 @@ public class CompilationServiceImpl implements CompilationService {
     @Transactional
     @Override
     public CompilationDto createCompilation(NewCompilationDto newCompilation) {
-        List<Event> events = new ArrayList<>();
+        Set<Event> events = new HashSet<>();
         for (Long eventId : newCompilation.getEvents()) {
             Event event = eventRepository.findById(eventId).get();
             events.add(event);

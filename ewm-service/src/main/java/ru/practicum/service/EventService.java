@@ -3,6 +3,7 @@ package ru.practicum.service;
 import ru.practicum.model.StateEvent;
 import ru.practicum.model.dto.event.*;
 
+import javax.servlet.http.HttpServletRequest;
 import java.util.List;
 
 public interface EventService {
@@ -15,9 +16,9 @@ public interface EventService {
 
     EventFullDto rejectionEvent(Long eventId);
 
-    List<EventShortDto> findEvents(String text, List<Integer> categories, Boolean paid, String rangeStart, String rangeEnd, Boolean onlyAvailable, String sort, Integer from, Integer size);
+    List<EventShortDto> findEvents(String text, List<Integer> categories, Boolean paid, String rangeStart, String rangeEnd, Boolean onlyAvailable, String sort, Integer from, Integer size, HttpServletRequest request);
 
-    EventFullDto findEventById(Long id);
+    EventFullDto findEventById(Long id, HttpServletRequest request);
 
     List<EventShortDto> findEventsOfUser(Long userId, Integer from, Integer size);
 

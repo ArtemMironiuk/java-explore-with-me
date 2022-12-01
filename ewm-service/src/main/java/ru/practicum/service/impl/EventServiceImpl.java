@@ -4,19 +4,23 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.client.RestTemplate;
+import ru.practicum.client.StatsClient;
 import ru.practicum.handler.exception.ObjectNotFoundException;
 import ru.practicum.handler.exception.ValidationException;
 import ru.practicum.model.*;
 import ru.practicum.model.dto.event.*;
-import ru.practicum.repository.CategoryRepository;
-import ru.practicum.repository.EventRepository;
-import ru.practicum.repository.LocationRepository;
-import ru.practicum.repository.UserRepository;
+import ru.practicum.repository.*;
 import ru.practicum.service.EventService;
 import ru.practicum.utils.mapper.EventMapper;
 
+import javax.servlet.http.HttpServletRequest;
 import java.time.Duration;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
@@ -34,9 +38,12 @@ public class EventServiceImpl implements EventService {
     private final UserRepository userRepository;
     private final CategoryRepository categoryRepository;
     private final LocationRepository locationRepository;
+    private final RequestRepository requestRepository;
+    private final StatsClient statsClient;
+
+    private final RestTemplate restTemplate;
 
     DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
-
 
     @Override
     public List<EventFullDto> searchEvents(Long[] users, StateEvent[] stateEvents, Long[] categories, String rangeStart,
@@ -122,16 +129,25 @@ public class EventServiceImpl implements EventService {
     @Override
     public List<EventShortDto> findEvents(String text, List<Integer> categories, Boolean paid,
                                           String rangeStart, String rangeEnd, Boolean onlyAvailable,
-                                          String sort, Integer from, Integer size) {
+                                          String sort, Integer from, Integer size, HttpServletRequest request) {
         Pageable pageable = PageRequest.of(from / size, size);
         //TODO сертвис статистики
         return null;
     }
 
     @Override
-    public EventFullDto findEventById(Long id) {
+    public EventFullDto findEventById(Long id, HttpServletRequest request) {
         //TODO сертвис статистики
-        return null;
+        Event event = eventRepository.findByIdAndStateEvent(id, StateEvent.PUBLISHED)
+                .orElseThrow(() -> new ObjectNotFoundException("Нет такого события!"));
+        event.setConfirmedRequests(Integer.valueOf(String.valueOf(requestRepository.countByEvent_IdAndStatus(id, StateRequest.CONFIRMED))));
+        EventFullDto eventFullDto = EventMapper.toEventFullDto(event);
+//        ResponseEntity<Object> response = statsClient.getViews(event.getPublishedOn(), event.getEventDate(),List.of(request.getRequestURI()), null);
+//        Object body = response.getBody();
+//        ViewStat view =
+//        eventFullDto.setViews(statsClient.getViews(event.getPublishedOn(), event.getEventDate(),List.of(request.getRequestURI()), null));
+        statsClient.save(request);
+        return eventFullDto;
     }
 
     @Override

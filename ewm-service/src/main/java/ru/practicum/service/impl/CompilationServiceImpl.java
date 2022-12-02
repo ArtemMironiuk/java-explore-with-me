@@ -47,6 +47,7 @@ public class CompilationServiceImpl implements CompilationService {
         return CompilationMapper.toCompilationDto(compilation);
     }
 
+    @Transactional
     @Override
     public void deleteCompilation(Long compId) {
         compilationRepository.findById(compId)
@@ -55,8 +56,8 @@ public class CompilationServiceImpl implements CompilationService {
         compilationRepository.deleteById(compId);
     }
 
-    @Override
     @Transactional
+    @Override
     public void deleteEventOfCompilation(Long compId, Long eventId) {
         Compilation compilation = compilationRepository.findById(compId)
                 .orElseThrow(() -> new ObjectNotFoundException("Нет такой подборки!"));
@@ -66,6 +67,7 @@ public class CompilationServiceImpl implements CompilationService {
         compilationRepository.save(compilation);
     }
 
+    @Transactional
     @Override
     public void addEventOfCompilation(Long compId, Long eventId) {
         Compilation compilation = compilationRepository.findById(compId)
@@ -77,6 +79,7 @@ public class CompilationServiceImpl implements CompilationService {
         compilationRepository.save(compilation);
     }
 
+    @Transactional
     @Override
     public void unpinCompilation(Long compId) {
         Compilation compilation = compilationRepository.findById(compId)
@@ -88,6 +91,7 @@ public class CompilationServiceImpl implements CompilationService {
         compilationRepository.save(compilation);
     }
 
+    @Transactional
     @Override
     public void pinCompilation(Long compId) {
         Compilation compilation = compilationRepository.findById(compId)

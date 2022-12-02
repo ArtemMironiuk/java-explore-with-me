@@ -38,7 +38,7 @@ public class EventFullDto {
     private Integer participantLimit;
     private String publishedOn;
     private Boolean requestModeration;
-    private StateEvent stateEvent;
+    private StateEvent state;
     @NotNull
     @NotBlank
     private String title;

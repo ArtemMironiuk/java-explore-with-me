@@ -26,6 +26,24 @@ public class EventMapper {
     public static EventFullDto toEventFullDto(Event event) {
         String createdOn = event.getCreatedOn().format(formatter);
         String eventDate = event.getEventDate().format(formatter);
+        if (event.getPublishedOn() == null) {
+            return EventFullDto.builder()
+                    .annotation(event.getAnnotation())
+                    .category(CategoryMapper.toCategoryDto(event.getCategory()))
+                    .confirmedRequest(event.getConfirmedRequests())
+                    .createdOn(createdOn)
+                    .description(event.getDescription())
+                    .eventDate(eventDate)
+                    .id(event.getId())
+                    .initiator(UserMapper.toUserShortDto(event.getInitiator()))
+                    .location(event.getLocation())
+                    .paid(event.getPaid())
+                    .participantLimit(event.getParticipantLimit())
+                    .requestModeration(event.getRequestModeration())
+                    .state(event.getState())
+                    .title(event.getTitle())
+                    .build();
+        }
         String publishedOn = event.getPublishedOn().format(formatter);
         return EventFullDto.builder()
                 .annotation(event.getAnnotation())
@@ -41,12 +59,29 @@ public class EventMapper {
                 .participantLimit(event.getParticipantLimit())
                 .publishedOn(publishedOn)
                 .requestModeration(event.getRequestModeration())
-                .stateEvent(event.getStateEvent())
+                .state(event.getState())
                 .title(event.getTitle())
                 .build();
     }
 
     public static Event toEvent(User user, Location location, Category category, NewEventDto newEvent) {
+        if (!newEvent.getRequestModeration()) {
+            return Event.builder()
+                    .annotation(newEvent.getAnnotation())
+                    .category(category)
+                    .createdOn(LocalDateTime.now().withNano(0))
+                    .description(newEvent.getDescription())
+                    .eventDate(LocalDateTime.parse(newEvent.getEventDate(), formatter))
+                    .initiator(user)
+                    .location(location)
+                    .paid(newEvent.getPaid())
+                    .publishedOn(LocalDateTime.now().withNano(0))
+                    .participantLimit(newEvent.getParticipantLimit())
+                    .requestModeration(newEvent.getRequestModeration())
+                    .state(StateEvent.PUBLISHED)
+                    .title(newEvent.getTitle())
+                    .build();
+        }
         return Event.builder()
                 .annotation(newEvent.getAnnotation())
                 .category(category)
@@ -58,7 +93,7 @@ public class EventMapper {
                 .paid(newEvent.getPaid())
                 .participantLimit(newEvent.getParticipantLimit())
                 .requestModeration(newEvent.getRequestModeration())
-                .stateEvent(StateEvent.PENDING)
+                .state(StateEvent.PENDING)
                 .title(newEvent.getTitle())
                 .build();
     }

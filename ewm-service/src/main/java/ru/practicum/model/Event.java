@@ -35,7 +35,6 @@ public class Event {
     @Column(name = "description")
     private String description;
     @NotNull
-    @NotBlank
     @ManyToOne
     @JoinColumn(name = "category_id", nullable = false)
     private Category category;
@@ -45,7 +44,6 @@ public class Event {
     @NotNull
     @Column(name = "event_date", nullable = false)
     private LocalDateTime eventDate;
-    @NotBlank
     @NotNull
     @Column(name = "paid", nullable = false)
     private Boolean paid;
@@ -64,8 +62,7 @@ public class Event {
     private LocalDateTime publishedOn;
     @Column(name = "event_state")
     @Enumerated(EnumType.STRING)
-    private StateEvent stateEvent;
-    @NotBlank
+    private StateEvent state;
     @NotNull
     @OneToOne
     @JoinColumn(name = "location", nullable = false)

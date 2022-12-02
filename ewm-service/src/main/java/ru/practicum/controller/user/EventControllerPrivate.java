@@ -19,7 +19,6 @@ import java.util.List;
 @RequestMapping(path = "/users")
 @Slf4j
 @RequiredArgsConstructor
-@Validated
 public class EventControllerPrivate {
 
     private final EventService eventService;

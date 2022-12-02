@@ -2,6 +2,7 @@ package ru.practicum.repository;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
@@ -21,7 +22,7 @@ public interface EventRepository extends JpaRepository<Event, Long> {
             "join User u on e.initiator.id = u.id " +
             "join Category c on e.category.id = c.id " +
             "where (e.initiator.id is null or e.initiator.id in (:users)) " +
-            "and (e.stateEvent is null or e.stateEvent in (:states)) " +
+            "and (e.state is null or e.state in (:states)) " +
             "and (e.category is null or e.category in (:categories)) " +
             "and (e.eventDate is null or e.eventDate > (:rangeStart)) " +
             "and (e.eventDate is null or e.eventDate < (:rangeEnd)) ")
@@ -34,5 +35,12 @@ public interface EventRepository extends JpaRepository<Event, Long> {
 
     Optional<Event> findByIdAndAndInitiator_Id(Long eventId, Long userId);
 
-    Optional<Event> findByIdAndStateEvent(Long eventId, StateEvent state);
+    Optional<Event> findByIdAndState(Long eventId, StateEvent state);
+
+    @Modifying
+    @Query("update Event e set e.state = :state , e.publishedOn = :dateNow where e.id = :eventId")
+    void setStateAndTimePublish(@Param("eventId") Long eventId,
+                                @Param("state") StateEvent state,
+                                @Param("dateNow") LocalDateTime dateNow);
+
 }

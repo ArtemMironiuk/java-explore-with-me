@@ -36,6 +36,7 @@ public class RequestServiceImpl implements RequestService {
                 .collect(toList());
     }
 
+    @Transactional
     @Override
     public ParticipationRequestDto confirmRequest(Long userId, Long eventId, Long reqId) {
         Request request = requestRepository.findByIdAndEventId(reqId, eventId)
@@ -62,6 +63,7 @@ public class RequestServiceImpl implements RequestService {
         return RequestMapper.toParticipationRequestDto(requestRepository.save(request));
     }
 
+    @Transactional
     @Override
     public ParticipationRequestDto rejectRequest(Long userId, Long eventId, Long reqId) {
         Request request = requestRepository.findRequestOfEvent(reqId, userId, eventId)
@@ -78,6 +80,7 @@ public class RequestServiceImpl implements RequestService {
                 .collect(toList());
     }
 
+    @Transactional
     @Override
     public ParticipationRequestDto addNewRequestOfUser(Long userId, Long eventId) {
         User user = userRepository.findById(userId)
@@ -87,7 +90,7 @@ public class RequestServiceImpl implements RequestService {
         if (user.getId() == event.getInitiator().getId()) {
             throw new ValidationException("Инициатор события не может добавить запрос на участие в своём событии!");
         }
-        if (event.getStateEvent().equals(StateEvent.PENDING) || event.getStateEvent().equals(StateEvent.CANCELED)) {
+        if (event.getState().equals(StateEvent.PENDING) || event.getState().equals(StateEvent.CANCELED)) {
             throw new ValidationException("Нельзя участвовать в неопубликованном событии!");
         }
         long countRequest = requestRepository.countByEvent_IdAndStatus(eventId, StateRequest.CONFIRMED);
@@ -102,6 +105,7 @@ public class RequestServiceImpl implements RequestService {
         return RequestMapper.toParticipationRequestDto(requestRepository.save(request));
     }
 
+    @Transactional
     @Override
     public ParticipationRequestDto cancelRequest(Long userId, Long requestId) {
         Request request = requestRepository.findByIdAndRequesterId(requestId, userId)

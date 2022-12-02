@@ -48,7 +48,6 @@ public class UserServiceImpl implements UserService {
     public void deleteUser(Long userId) {
         userRepository.findById(userId)
                 .orElseThrow(() -> new ObjectNotFoundException("Нет такого пользователя!"));
-        //TODO exception
         userRepository.deleteById(userId);
     }
 }

@@ -29,10 +29,10 @@ public class StatsServiceImpl implements StatsService {
 
     @Override
     public List<ViewStats> getViewStats(LocalDateTime start, LocalDateTime end, List<String> uris, Boolean unique) {
-        if (unique) {
-            return statsServiceRepository.findAllUnique(start, end, uris, unique);
+        if (unique == true) {
+            return statsServiceRepository.findStatAllUnique(start, end, uris);
         } else {
-            return statsServiceRepository.findAll(start, end, uris);
+            return statsServiceRepository.findStatAll(start, end, uris);
         }
     }
 }

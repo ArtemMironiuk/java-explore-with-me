@@ -52,12 +52,14 @@ public class EventControllerByAdmin {
     }
 
     @PatchMapping("/{eventId}/publish")
-    public EventFullDto publishingEvent(@PathVariable @PositiveOrZero Long eventId) {
+    public EventFullDto publishingEvent(@PathVariable Long eventId) {
+        log.info("Получен запрос к эндпоинту PATCH, /admin/events/{eventId}/publish");
         return eventService.publishingEvent(eventId);
     }
 
     @PatchMapping("/{eventId}/reject")
     public EventFullDto rejectionEvent(@PathVariable @PositiveOrZero Long eventId) {
+        log.info("Получен запрос к эндпоинту PATCH, /admin/events/{eventId}/reject");
         return eventService.rejectionEvent(eventId);
     }
 }

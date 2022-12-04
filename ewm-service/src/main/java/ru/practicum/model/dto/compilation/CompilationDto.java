@@ -7,6 +7,7 @@ import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.PositiveOrZero;
 import java.util.List;
+import java.util.Set;
 
 @Getter
 @Setter
@@ -15,13 +16,8 @@ import java.util.List;
 @ToString
 @Builder
 public class CompilationDto {
-    private List<EventShortDto> events;
-    @NotNull
-    @PositiveOrZero
     private Long id;
-    @NotNull
     private Boolean pinned;
-    @NotNull
-    @NotBlank
     private String title;
+    private Set<EventShortDto> events;
 }

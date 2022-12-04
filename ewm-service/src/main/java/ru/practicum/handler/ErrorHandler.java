@@ -13,6 +13,7 @@ import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
 import org.springframework.web.servlet.NoHandlerFoundException;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
+import ru.practicum.handler.exception.ExistsElementException;
 import ru.practicum.handler.exception.ObjectNotFoundException;
 import ru.practicum.handler.exception.ValidationException;
 
@@ -60,6 +61,14 @@ public class ErrorHandler extends ResponseEntityExceptionHandler {
         apiError.setMessage(String.format("Данного метода %s нет в URL %s", ex.getHttpMethod(), ex.getRequestURL()));
         apiError.setReason(ex.getMessage());
         return ResponseEntityBuilder.build(apiError);
+    }
+    @ExceptionHandler(ExistsElementException.class)
+    public ResponseEntity<Object> handleExistsElementException(ExistsElementException ex) {
+        log.error("409 {}",ex.getMessage());
+        ApiError error = new ApiError(HttpStatus.CONFLICT);
+        error.setMessage(ex.getMessage());
+        error.setReason("Повторяющееся поле.");
+        return ResponseEntityBuilder.build(error);
     }
 
     /**
@@ -122,24 +131,4 @@ public class ErrorHandler extends ResponseEntityExceptionHandler {
         return ResponseEntityBuilder.build(apiError);
     }
 
-//    @ExceptionHandler
-//    @ResponseStatus(HttpStatus.CONFLICT)
-//    public ErrorResponse handleNotFound(final ConflictException e) {
-//        log.info("409 {}", e.getMessage(), e);
-//        return new ErrorResponse(e.getMessage());
-//    }
-//
-//    @ExceptionHandler
-//    @ResponseStatus(HttpStatus.CONFLICT)
-//    public ErrorResponse handleNotFound(final DataIntegrityViolationException e) {
-//        log.info("409 {}", e.getMessage(), e);
-//        return new ErrorResponse(e.getMessage());
-//    }
-
-//    @ExceptionHandler
-//    @ResponseStatus(HttpStatus.BAD_REQUEST)
-//    public ErrorResponse handleNotFound(final Throwable e) {
-//        log.info("400 {}", e.getMessage(), e);
-//        return new ErrorResponse(e.getClass().getName());
-//    }
 }

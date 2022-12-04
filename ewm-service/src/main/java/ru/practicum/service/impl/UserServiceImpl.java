@@ -6,6 +6,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import ru.practicum.handler.exception.ExistsElementException;
 import ru.practicum.model.dto.user.NewUserRequest;
 import ru.practicum.model.dto.user.UserDto;
 import ru.practicum.handler.exception.ObjectNotFoundException;
@@ -30,6 +31,9 @@ public class UserServiceImpl implements UserService {
     @Transactional
     @Override
     public UserDto createUser(NewUserRequest newUser) {
+        if (userRepository.countByName(newUser.getName()) != 0) {
+            throw new ExistsElementException("User with this name already exist");
+        }
         @Valid User user = userRepository.save(UserMapper.toUser(newUser));
         return UserMapper.toUserDto(user);
     }

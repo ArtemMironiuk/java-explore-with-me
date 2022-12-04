@@ -7,6 +7,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import ru.practicum.handler.exception.ExistsElementException;
 import ru.practicum.model.dto.category.CategoryDto;
 import ru.practicum.model.dto.category.NewCategoryDto;
 import ru.practicum.handler.exception.ObjectNotFoundException;
@@ -48,6 +49,9 @@ public class CategoryServiceImpl implements CategoryService {
     @Transactional
     @Override
     public CategoryDto createCategory(NewCategoryDto newCategory) {
+        if (categoryRepository.countByName(newCategory.getName()) != 0) {
+            throw new ExistsElementException("Category with this name already exist");
+        }
         @Valid Category category = categoryRepository.save(CategoryMapper.toCategory(newCategory));
         return CategoryMapper.toCategoryDto(category);
     }
@@ -55,10 +59,11 @@ public class CategoryServiceImpl implements CategoryService {
     @Transactional
     @Override
     public CategoryDto updateCategory(CategoryDto categoryDto) {
-
+        if (categoryRepository.countByName(categoryDto.getName()) != 0) {
+            throw new ExistsElementException("Category with this name already exist");
+        }
         Category category = categoryRepository.findById(categoryDto.getId())
                 .orElseThrow(() -> new ObjectNotFoundException("Category c таким id нет в базе"));
-        //TODO exception
         category.setName(categoryDto.getName());
         return CategoryMapper.toCategoryDto(categoryRepository.save(category));
     }

@@ -12,25 +12,24 @@ import ru.practicum.model.StateEvent;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 
 @Repository
 public interface EventRepository extends JpaRepository<Event, Long> {
 
-    List<Event> findByInitiator(Long userId, Pageable pageable);
+    List<Event> findByInitiatorId(Long userId, Pageable pageable);
 
     @Query("select e from Event e " +
-            "join User u on e.initiator.id = u.id " +
-            "join Category c on e.category.id = c.id " +
-            "where (e.initiator.id is null or e.initiator.id in (:users)) " +
-            "and (e.state is null or e.state in (:states)) " +
-            "and (e.category is null or e.category in (:categories)) " +
-            "and (e.eventDate is null or e.eventDate > (:rangeStart)) " +
-            "and (e.eventDate is null or e.eventDate < (:rangeEnd)) ")
-    List<Event> searchEvent(@Param("users") Long[] users,
-                            @Param("states") StateEvent[] stateEvents,
-                            @Param("categories") Long[] categories,
-                            @Param("rangeStart") LocalDateTime rangeStart,
-                            @Param("rangeEnd") LocalDateTime rangeEnd,
+            "where ((:users) is null or e.initiator.id in :users) " +
+            "and ((:states) is null or e.state in :states) " +
+            "and ((:categories) is null or e.category.id in :categories) " +
+            "and (e.eventDate > :rangeStart) " +
+            "AND (CAST(:rangeEnd AS date) IS NULL OR e.eventDate <= :rangeEnd)")
+    List<Event> searchEvent(List<Long> users,
+                            List<StateEvent> states,
+                            List<Long> categories,
+                            LocalDateTime rangeStart,
+                            LocalDateTime rangeEnd,
                             Pageable pageable);
 
     Optional<Event> findByIdAndAndInitiator_Id(Long eventId, Long userId);
@@ -43,4 +42,5 @@ public interface EventRepository extends JpaRepository<Event, Long> {
                                 @Param("state") StateEvent state,
                                 @Param("dateNow") LocalDateTime dateNow);
 
+    Set<Event> findAllByIdIn(Set<Long> events);
 }

@@ -6,6 +6,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
+import java.time.LocalDateTime;
 
 @Data
 @AllArgsConstructor
@@ -26,6 +27,6 @@ public class Statistic {
     @Column(name = "ip")
     private String ip;
     @Column(name = "timestamp")
-    private String timestamp;
+    private LocalDateTime timestamp;
 
 }

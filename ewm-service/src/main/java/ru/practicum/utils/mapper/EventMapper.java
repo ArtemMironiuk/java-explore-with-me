@@ -1,6 +1,9 @@
 package ru.practicum.utils.mapper;
 
-import ru.practicum.model.*;
+import ru.practicum.model.Category;
+import ru.practicum.model.Event;
+import ru.practicum.model.Location;
+import ru.practicum.model.User;
 import ru.practicum.model.dto.event.EventFullDto;
 import ru.practicum.model.dto.event.EventShortDto;
 import ru.practicum.model.dto.event.NewEventDto;
@@ -10,6 +13,7 @@ import java.time.format.DateTimeFormatter;
 
 public class EventMapper {
     static DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+
     public static EventShortDto toEventShortDto(Event event) {
         return EventShortDto.builder()
                 .annotation(event.getAnnotation())
@@ -30,7 +34,7 @@ public class EventMapper {
             return EventFullDto.builder()
                     .annotation(event.getAnnotation())
                     .category(CategoryMapper.toCategoryDto(event.getCategory()))
-                    .confirmedRequest(event.getConfirmedRequests())
+                    .confirmedRequests(event.getConfirmedRequests())
                     .createdOn(createdOn)
                     .description(event.getDescription())
                     .eventDate(eventDate)
@@ -48,7 +52,7 @@ public class EventMapper {
         return EventFullDto.builder()
                 .annotation(event.getAnnotation())
                 .category(CategoryMapper.toCategoryDto(event.getCategory()))
-                .confirmedRequest(event.getConfirmedRequests())
+                .confirmedRequests(event.getConfirmedRequests())
                 .createdOn(createdOn)
                 .description(event.getDescription())
                 .eventDate(eventDate)
@@ -65,23 +69,6 @@ public class EventMapper {
     }
 
     public static Event toEvent(User user, Location location, Category category, NewEventDto newEvent) {
-        if (!newEvent.getRequestModeration()) {
-            return Event.builder()
-                    .annotation(newEvent.getAnnotation())
-                    .category(category)
-                    .createdOn(LocalDateTime.now().withNano(0))
-                    .description(newEvent.getDescription())
-                    .eventDate(LocalDateTime.parse(newEvent.getEventDate(), formatter))
-                    .initiator(user)
-                    .location(location)
-                    .paid(newEvent.getPaid())
-                    .publishedOn(LocalDateTime.now().withNano(0))
-                    .participantLimit(newEvent.getParticipantLimit())
-                    .requestModeration(newEvent.getRequestModeration())
-                    .state(StateEvent.PUBLISHED)
-                    .title(newEvent.getTitle())
-                    .build();
-        }
         return Event.builder()
                 .annotation(newEvent.getAnnotation())
                 .category(category)
@@ -93,7 +80,6 @@ public class EventMapper {
                 .paid(newEvent.getPaid())
                 .participantLimit(newEvent.getParticipantLimit())
                 .requestModeration(newEvent.getRequestModeration())
-                .state(StateEvent.PENDING)
                 .title(newEvent.getTitle())
                 .build();
     }

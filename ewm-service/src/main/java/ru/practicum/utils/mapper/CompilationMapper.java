@@ -7,6 +7,7 @@ import ru.practicum.model.Compilation;
 import ru.practicum.model.Event;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
@@ -24,7 +25,7 @@ public class CompilationMapper {
     }
 
     public static CompilationDto toCompilationDto(Compilation compilation) {
-        List<EventShortDto> eventShorts= new ArrayList<>();
+        Set<EventShortDto> eventShorts= new HashSet<>();
         for (Event event : compilation.getEvents()) {
             eventShorts.add(EventMapper.toEventShortDto(event));
         }

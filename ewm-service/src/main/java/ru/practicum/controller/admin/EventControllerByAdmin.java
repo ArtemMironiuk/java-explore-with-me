@@ -3,6 +3,7 @@ package ru.practicum.controller.admin;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import ru.practicum.handler.exception.ValidationException;
@@ -12,6 +13,7 @@ import ru.practicum.model.dto.event.EventFullDto;
 import ru.practicum.service.EventService;
 
 import javax.validation.constraints.PositiveOrZero;
+import java.time.LocalDateTime;
 import java.util.List;
 
 @RestController
@@ -24,24 +26,17 @@ public class EventControllerByAdmin {
     private final EventService eventService;
 
     @GetMapping
-    public List<EventFullDto> searchEvents(@RequestParam(name = "users") Long[] users,
-                                           @RequestParam(name = "states") String[] states,
-                                           @RequestParam(name = "categories") Long[] categories,
-                                           @RequestParam(name = "rangeStart") String rangeStart,
-                                           @RequestParam(name = "rangeEnd") String rangeEnd,
+    public List<EventFullDto> searchEvents(@RequestParam(name = "users", required = false) List<Long> users,
+                                           @RequestParam(name = "states",required = false) List<StateEvent> states,
+                                           @RequestParam(name = "categories",required = false) List<Long> categories,
+                                           @RequestParam(name = "rangeStart",required = false)
+                                               @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss") LocalDateTime rangeStart,
+                                           @RequestParam(name = "rangeEnd", required = false)
+                                               @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss") LocalDateTime rangeEnd,
                                            @RequestParam(name = "from", defaultValue = "0") Integer from,
                                            @RequestParam(name = "size", defaultValue = "10") Integer size) {
         log.info("Получен запрос к эндпоинту GET, /admin/events");
-        try {
-            StateEvent[] stateEventNew = new StateEvent[3];
-            for (int i = 0; i < states.length; i++) {
-                StateEvent stateEvent = StateEvent.valueOf(states[i]);
-                stateEventNew[i] = stateEvent;
-            }
-            return eventService.searchEvents(users, stateEventNew, categories, rangeStart, rangeEnd, from, size);
-        } catch (IllegalArgumentException e) {
-            throw new ValidationException("Unknown state: UNSUPPORTED_STATUS");
-        }
+        return eventService.searchEvents(users, states, categories, rangeStart, rangeEnd, from, size);
     }
 
     @PutMapping("/{eventId}")

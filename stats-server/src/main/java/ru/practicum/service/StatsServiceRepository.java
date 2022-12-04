@@ -12,7 +12,7 @@ import java.util.List;
 public interface StatsServiceRepository extends JpaRepository<Statistic, Long> {
 
     @Query("SELECT new ru.practicum.model.dto.ViewStats(e.app, e.uri, COUNT (e.ip)) " +
-            "from Statistic e WHERE e.timestamp> ?1 AND e.timestamp< ?2 GROUP BY e.app, e.uri")
+            "from Statistic e WHERE e.timestamp> ?1 AND e.timestamp< ?2 AND e.uri in ?3 GROUP BY e.app, e.uri")
     List<ViewStats> findStatAll(LocalDateTime start, LocalDateTime end, List<String> uris);
 
     @Query("SELECT new ru.practicum.model.dto.ViewStats(e.app, e.uri, COUNT (DISTINCT e.ip)) from Statistic e " +
@@ -21,6 +21,6 @@ public interface StatsServiceRepository extends JpaRepository<Statistic, Long> {
             "AND e.uri in (:uris)" +
             "GROUP BY e.app, e.uri")
     List<ViewStats> findStatAllUnique(@Param("start")LocalDateTime start,
-                                  @Param("end")LocalDateTime end,
-                                  @Param("uris")List<String> uris);
+                                      @Param("end")LocalDateTime end,
+                                      @Param("uris")List<String> uris);
 }

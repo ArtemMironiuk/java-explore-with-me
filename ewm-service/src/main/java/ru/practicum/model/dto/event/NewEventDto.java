@@ -22,6 +22,7 @@ public class NewEventDto {
     private String description;
     @NotNull
     private String eventDate;
+    private Long eventId;
     @NotNull
     private Location location;
     private Boolean paid;

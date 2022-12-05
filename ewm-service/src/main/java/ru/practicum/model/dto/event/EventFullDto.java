@@ -1,12 +1,14 @@
 package ru.practicum.model.dto.event;
 
 import lombok.*;
-import ru.practicum.model.dto.category.CategoryDto;
-import ru.practicum.model.dto.user.UserShortDto;
 import ru.practicum.model.Location;
 import ru.practicum.model.StateEvent;
+import ru.practicum.model.dto.category.CategoryDto;
+import ru.practicum.model.dto.user.UserShortDto;
 
-import javax.validation.constraints.*;
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotEmpty;
+import javax.validation.constraints.NotNull;
 
 @Getter
 @Setter
@@ -42,5 +44,5 @@ public class EventFullDto {
     @NotNull
     @NotBlank
     private String title;
-    private Integer views;
+    private Long views;
 }

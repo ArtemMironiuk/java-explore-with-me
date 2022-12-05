@@ -7,13 +7,13 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ru.practicum.handler.exception.ExistsElementException;
+import ru.practicum.handler.exception.ObjectNotFoundException;
+import ru.practicum.model.User;
 import ru.practicum.model.dto.user.NewUserRequest;
 import ru.practicum.model.dto.user.UserDto;
-import ru.practicum.handler.exception.ObjectNotFoundException;
-import ru.practicum.utils.mapper.UserMapper;
-import ru.practicum.model.User;
 import ru.practicum.repository.UserRepository;
 import ru.practicum.service.UserService;
+import ru.practicum.utils.mapper.UserMapper;
 
 import javax.validation.Valid;
 import java.util.List;

@@ -62,9 +62,10 @@ public class ErrorHandler extends ResponseEntityExceptionHandler {
         apiError.setReason(ex.getMessage());
         return ResponseEntityBuilder.build(apiError);
     }
+
     @ExceptionHandler(ExistsElementException.class)
     public ResponseEntity<Object> handleExistsElementException(ExistsElementException ex) {
-        log.error("409 {}",ex.getMessage());
+        log.error("409 {}", ex.getMessage());
         ApiError error = new ApiError(HttpStatus.CONFLICT);
         error.setMessage(ex.getMessage());
         error.setReason("Повторяющееся поле.");

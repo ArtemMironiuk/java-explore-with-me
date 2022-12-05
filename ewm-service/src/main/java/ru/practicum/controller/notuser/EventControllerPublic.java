@@ -26,13 +26,13 @@ public class EventControllerPublic {
 
     @GetMapping
     public List<EventShortDto> findEvents(@RequestParam(name = "text", required = false) String text,
-                                          @RequestParam(name ="categories", required = false) List<Integer> categories,
-                                          @RequestParam(name ="paid", required = false) Boolean paid,
-                                          @RequestParam(name ="rangeStart", required = false)
-                                              @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss") LocalDateTime rangeStart,
-                                          @RequestParam(name ="rangeEnd", required = false)
-                                              @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss") LocalDateTime rangeEnd,
-                                          @RequestParam(name ="onlyAvailable", defaultValue = "false") Boolean onlyAvailable,
+                                          @RequestParam(name = "categories", required = false) List<Long> categories,
+                                          @RequestParam(name = "paid", required = false) Boolean paid,
+                                          @RequestParam(name = "rangeStart", required = false)
+                                          @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss") LocalDateTime rangeStart,
+                                          @RequestParam(name = "rangeEnd", required = false)
+                                          @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss") LocalDateTime rangeEnd,
+                                          @RequestParam(name = "onlyAvailable", defaultValue = "false") Boolean onlyAvailable,
                                           @RequestParam(name = "sort", required = false) String sortStr,
                                           @RequestParam(name = "from", defaultValue = "0") Integer from,
                                           @RequestParam(name = "size", defaultValue = "10") Integer size,

@@ -6,7 +6,6 @@ import org.springframework.web.bind.annotation.*;
 import ru.practicum.model.dto.event.EventFullDto;
 import ru.practicum.model.dto.event.EventShortDto;
 import ru.practicum.model.dto.event.NewEventDto;
-import ru.practicum.model.dto.event.NewUpdateEventRequestDto;
 import ru.practicum.service.EventService;
 
 import javax.validation.Valid;

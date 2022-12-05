@@ -2,7 +2,10 @@ package ru.practicum.service;
 
 import ru.practicum.model.Sort;
 import ru.practicum.model.StateEvent;
-import ru.practicum.model.dto.event.*;
+import ru.practicum.model.dto.event.AdminUpdateEventRequest;
+import ru.practicum.model.dto.event.EventFullDto;
+import ru.practicum.model.dto.event.EventShortDto;
+import ru.practicum.model.dto.event.NewEventDto;
 
 import javax.servlet.http.HttpServletRequest;
 import java.time.LocalDateTime;
@@ -18,7 +21,7 @@ public interface EventService {
 
     EventFullDto rejectionEvent(Long eventId);
 
-    List<EventShortDto> findEvents(String text, List<Integer> categories, Boolean paid, LocalDateTime rangeStart, LocalDateTime rangeEnd, Boolean onlyAvailable, Sort sort, Integer from, Integer size, HttpServletRequest request);
+    List<EventShortDto> findEvents(String text, List<Long> categories, Boolean paid, LocalDateTime rangeStart, LocalDateTime rangeEnd, Boolean onlyAvailable, Sort sort, Integer from, Integer size, HttpServletRequest request);
 
     EventFullDto findEventById(Long id, HttpServletRequest request);
 

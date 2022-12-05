@@ -2,11 +2,9 @@ package ru.practicum.controller.admin;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
-import ru.practicum.handler.exception.ValidationException;
 import ru.practicum.model.StateEvent;
 import ru.practicum.model.dto.event.AdminUpdateEventRequest;
 import ru.practicum.model.dto.event.EventFullDto;
@@ -27,12 +25,12 @@ public class EventControllerByAdmin {
 
     @GetMapping
     public List<EventFullDto> searchEvents(@RequestParam(name = "users", required = false) List<Long> users,
-                                           @RequestParam(name = "states",required = false) List<StateEvent> states,
-                                           @RequestParam(name = "categories",required = false) List<Long> categories,
-                                           @RequestParam(name = "rangeStart",required = false)
-                                               @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss") LocalDateTime rangeStart,
+                                           @RequestParam(name = "states", required = false) List<StateEvent> states,
+                                           @RequestParam(name = "categories", required = false) List<Long> categories,
+                                           @RequestParam(name = "rangeStart", required = false)
+                                           @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss") LocalDateTime rangeStart,
                                            @RequestParam(name = "rangeEnd", required = false)
-                                               @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss") LocalDateTime rangeEnd,
+                                           @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss") LocalDateTime rangeEnd,
                                            @RequestParam(name = "from", defaultValue = "0") Integer from,
                                            @RequestParam(name = "size", defaultValue = "10") Integer size) {
         log.info("Получен запрос к эндпоинту GET, /admin/events");

@@ -4,13 +4,18 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ru.practicum.client.StatsClient;
+import ru.practicum.client.ViewStat;
 import ru.practicum.handler.exception.ObjectNotFoundException;
 import ru.practicum.handler.exception.ValidationException;
 import ru.practicum.model.*;
-import ru.practicum.model.dto.event.*;
+import ru.practicum.model.dto.event.AdminUpdateEventRequest;
+import ru.practicum.model.dto.event.EventFullDto;
+import ru.practicum.model.dto.event.EventShortDto;
+import ru.practicum.model.dto.event.NewEventDto;
 import ru.practicum.repository.*;
 import ru.practicum.service.EventService;
 import ru.practicum.utils.mapper.EventMapper;
@@ -20,6 +25,7 @@ import javax.servlet.http.HttpServletRequest;
 import java.time.Duration;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.Comparator;
 import java.util.List;
 
 import static java.util.stream.Collectors.toList;
@@ -97,8 +103,8 @@ public class EventServiceImpl implements EventService {
     @Transactional
     public EventFullDto publishingEvent(Long eventId) {
         Event event = eventRepository.findById(eventId).orElseThrow(() -> new ObjectNotFoundException("Нет такого события!"));
-//        if (event.getState().equals(StateEvent.CANCELED) || event.getState().equals(StateEvent.PUBLISHED))
-//            throw new ValidationException("! Событие уже отменено или опубликовано!");
+        if (event.getState().equals(StateEvent.CANCELED) || event.getState().equals(StateEvent.PUBLISHED))
+            throw new ValidationException("! Событие уже отменено или опубликовано!");
         LocalDateTime dateAndTimeNowPublish = LocalDateTime.now();
         Duration duration = Duration.between(dateAndTimeNowPublish, event.getEventDate());
         if (duration.toMinutes() < 60)
@@ -120,31 +126,46 @@ public class EventServiceImpl implements EventService {
     }
 
     @Override
-    public List<EventShortDto> findEvents(String text, List<Integer> categories, Boolean paid,
+    public List<EventShortDto> findEvents(String text, List<Long> categories, Boolean paid,
                                           LocalDateTime rangeStart, LocalDateTime rangeEnd, Boolean onlyAvailable,
                                           Sort sort, Integer from, Integer size, HttpServletRequest request) {
         Pageable pageable = PageRequest.of(from / size, size);
-        //TODO сертвис статистики
+        List<EventShortDto> events = eventRepository.findEvents(text, categories, paid, rangeStart, rangeEnd, onlyAvailable, pageable)
+                .stream()
+                .map(EventMapper::toEventShortDto)
+                .collect(toList());
+        if (sort != null) {
+            switch (sort) {
+                case EVENT_DATE:
+                    events = events.stream()
+                            .sorted(Comparator.comparing(EventShortDto::getEventDate))
+                            .collect(toList());
+                    break;
+                case VIEWS:
+                    events = events.stream()
+                            .sorted(Comparator.comparing(EventShortDto::getViews))
+                            .collect(toList());
+                    break;
+            }
+        }
         statsClient.save(request);
-        return null;
+        return events;
     }
 
     @Override
     public EventFullDto findEventById(Long id, HttpServletRequest request) {
-        //TODO сертвис статистики
         Event event = eventRepository.findByIdAndState(id, StateEvent.PUBLISHED)
                 .orElseThrow(() -> new ObjectNotFoundException("Нет такого события!"));
         event.setConfirmedRequests(Integer.valueOf(String.valueOf(requestRepository.countByEvent_IdAndStatus(id, StateRequest.CONFIRMED))));
         EventFullDto eventFullDto = EventMapper.toEventFullDto(event);
-//        ResponseEntity<Object> response = statsClient.getViews(
-//                event.getPublishedOn(),
-//                event.getEventDate(),
-//                List.of(request.getRequestURI()),
-//                null);
-//        Object body = response.getBody();
-//        ViewStat view =
-//        eventFullDto.setViews(statsClient.getViews(event.getPublishedOn(), event.getEventDate(),List.of(request.getRequestURI()), null));
         statsClient.save(request);
+        ResponseEntity<ViewStat[]> response = statsClient.getViews(
+                event.getPublishedOn().format(formatter),
+                LocalDateTime.now().plusMinutes(1).format(formatter),
+                new String[]{request.getRequestURI()},
+                false);
+        Long views = response.getBody()[0].getHits();
+        eventFullDto.setViews(views);
         return eventFullDto;
     }
 
@@ -168,7 +189,7 @@ public class EventServiceImpl implements EventService {
                 .orElseThrow(() -> new ObjectNotFoundException("Нет такого события!"));
         Duration duration = Duration.between(LocalDateTime.now().withNano(0), event.getEventDate());
         if (duration.toMinutes() >= 120) {
-            if (event.getState().equals(StateEvent.CANCELED) || event.getRequestModeration() == true) {
+            if (event.getState().equals(StateEvent.CANCELED) || event.getRequestModeration()) {
                 if (event.getState().equals(StateEvent.CANCELED)) {
                     event.setRequestModeration(true);
                 }

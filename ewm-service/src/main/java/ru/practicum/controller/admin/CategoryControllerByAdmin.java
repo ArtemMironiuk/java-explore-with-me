@@ -1,15 +1,14 @@
 package ru.practicum.controller.admin;
 
-import org.springframework.web.bind.annotation.*;
-
-import javax.validation.Valid;
-import javax.validation.constraints.Positive;
-
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.web.bind.annotation.*;
 import ru.practicum.model.dto.category.CategoryDto;
 import ru.practicum.model.dto.category.NewCategoryDto;
 import ru.practicum.service.CategoryService;
+
+import javax.validation.Valid;
+import javax.validation.constraints.Positive;
 
 @RestController
 @RequestMapping(path = "/admin/categories")

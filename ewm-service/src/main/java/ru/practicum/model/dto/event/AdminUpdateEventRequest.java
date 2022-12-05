@@ -3,8 +3,6 @@ package ru.practicum.model.dto.event;
 import lombok.*;
 import ru.practicum.model.Location;
 
-import java.time.LocalDateTime;
-
 @Getter
 @Setter
 @AllArgsConstructor

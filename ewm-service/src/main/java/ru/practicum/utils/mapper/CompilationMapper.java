@@ -1,20 +1,18 @@
 package ru.practicum.utils.mapper;
 
+import ru.practicum.model.Compilation;
+import ru.practicum.model.Event;
 import ru.practicum.model.dto.compilation.CompilationDto;
 import ru.practicum.model.dto.compilation.NewCompilationDto;
 import ru.practicum.model.dto.event.EventShortDto;
-import ru.practicum.model.Compilation;
-import ru.practicum.model.Event;
 
-import java.util.ArrayList;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
 
 public class CompilationMapper {
 
     public static Compilation toCompilation(NewCompilationDto newCompilation, Set<Event> events) {
-        if(newCompilation.getPinned() == null) {
+        if (newCompilation.getPinned() == null) {
             newCompilation.setPinned(false);
         }
         return Compilation.builder()
@@ -25,7 +23,7 @@ public class CompilationMapper {
     }
 
     public static CompilationDto toCompilationDto(Compilation compilation) {
-        Set<EventShortDto> eventShorts= new HashSet<>();
+        Set<EventShortDto> eventShorts = new HashSet<>();
         for (Event event : compilation.getEvents()) {
             eventShorts.add(EventMapper.toEventShortDto(event));
         }

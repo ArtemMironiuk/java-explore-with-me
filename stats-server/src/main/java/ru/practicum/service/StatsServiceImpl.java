@@ -1,24 +1,28 @@
 package ru.practicum.service;
 
-import lombok.AllArgsConstructor;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import ru.practicum.model.EndpointStatsMapper;
 import ru.practicum.model.Statistic;
 import ru.practicum.model.dto.EndpointHitDto;
-import ru.practicum.model.EndpointStatsMapper;
 import ru.practicum.model.dto.ViewStats;
 
+import java.io.UnsupportedEncodingException;
+import java.net.URLDecoder;
+import java.nio.charset.StandardCharsets;
 import java.time.LocalDateTime;
-import java.util.List;
+import java.time.format.DateTimeFormatter;
 
 @Slf4j
 @Service
-@AllArgsConstructor
+@RequiredArgsConstructor
 public class StatsServiceImpl implements StatsService {
 
-    @Autowired
-    private StatsServiceRepository statsServiceRepository;
+
+    private final StatsServiceRepository statsServiceRepository;
+
+    DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
 
     @Override
     public Statistic save(EndpointHitDto endpointHitDto) {
@@ -28,11 +32,21 @@ public class StatsServiceImpl implements StatsService {
     }
 
     @Override
-    public List<ViewStats> getViewStats(LocalDateTime start, LocalDateTime end, List<String> uris, Boolean unique) {
-        if (unique == true) {
-            return statsServiceRepository.findStatAllUnique(start, end, uris);
+    public ViewStats[] getViewStats(String start, String end, String[] uris, Boolean unique) {
+        LocalDateTime startDe = LocalDateTime.parse(decode(start), formatter);
+        LocalDateTime endDe = LocalDateTime.parse(decode(end), formatter);
+        if (unique) {
+            return statsServiceRepository.findStatAllUnique(startDe, endDe, uris);
         } else {
-            return statsServiceRepository.findStatAll(start, end, uris);
+            return statsServiceRepository.findStatAll(startDe, endDe, uris);
+        }
+    }
+
+    private String decode(String value) {
+        try {
+            return URLDecoder.decode(value, StandardCharsets.UTF_8.toString());
+        } catch (UnsupportedEncodingException e) {
+            throw new RuntimeException(e);
         }
     }
 }

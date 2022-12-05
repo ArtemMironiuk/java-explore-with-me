@@ -7,7 +7,6 @@ import org.springframework.web.bind.annotation.*;
 import ru.practicum.model.dto.category.CategoryDto;
 import ru.practicum.service.CategoryService;
 
-
 import javax.validation.constraints.PositiveOrZero;
 import java.util.List;
 

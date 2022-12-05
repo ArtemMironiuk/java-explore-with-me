@@ -2,19 +2,18 @@ package ru.practicum.service.impl;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ru.practicum.handler.exception.ExistsElementException;
+import ru.practicum.handler.exception.ObjectNotFoundException;
+import ru.practicum.model.Category;
 import ru.practicum.model.dto.category.CategoryDto;
 import ru.practicum.model.dto.category.NewCategoryDto;
-import ru.practicum.handler.exception.ObjectNotFoundException;
-import ru.practicum.utils.mapper.CategoryMapper;
-import ru.practicum.model.Category;
 import ru.practicum.repository.CategoryRepository;
 import ru.practicum.service.CategoryService;
+import ru.practicum.utils.mapper.CategoryMapper;
 
 import javax.validation.Valid;
 import java.util.List;

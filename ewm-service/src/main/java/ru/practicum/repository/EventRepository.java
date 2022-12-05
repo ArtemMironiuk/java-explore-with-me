@@ -1,7 +1,7 @@
 package ru.practicum.repository;
 
-import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -43,4 +43,18 @@ public interface EventRepository extends JpaRepository<Event, Long> {
                                 @Param("dateNow") LocalDateTime dateNow);
 
     Set<Event> findAllByIdIn(Set<Long> events);
+
+    @Query("select e from Event e where (lower(e.annotation) like lower(concat('%', :text, '%')) or " +
+            "lower(e.description) like lower(concat('%', :text, '%')))" +
+            "AND ((:categories) IS NULL OR e.category.id IN :categories) " +
+            "and e.paid = :paid " +
+            "and e.eventDate between :rangeStart and :rangeEnd " +
+            "and (:onlyAvailable is false or (e.participantLimit = 0 or e.confirmedRequests < e.participantLimit))")
+    List<Event> findEvents(String text,
+                           List<Long> categories,
+                           Boolean paid,
+                           LocalDateTime rangeStart,
+                           LocalDateTime rangeEnd,
+                           Boolean onlyAvailable,
+                           Pageable pageable);
 }

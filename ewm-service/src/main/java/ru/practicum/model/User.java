@@ -26,7 +26,7 @@ public class User {
     @Column(name = "name", nullable = false)
     @NotNull
     private String name;
-    @Column(name = "email", nullable = false, unique = true,  length = 512)
+    @Column(name = "email", nullable = false, unique = true, length = 512)
     @Size(min = 1, max = 512)
     @Email
     @NotNull

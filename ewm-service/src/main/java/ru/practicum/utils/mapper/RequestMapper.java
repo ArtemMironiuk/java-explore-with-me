@@ -12,6 +12,7 @@ import java.time.format.DateTimeFormatter;
 public class RequestMapper {
 
     static DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss.SSS");
+
     public static ParticipationRequestDto toParticipationRequestDto(Request request) {
         return ParticipationRequestDto.builder()
                 .created(LocalDateTime.parse(request.getCreated().format(formatter)))

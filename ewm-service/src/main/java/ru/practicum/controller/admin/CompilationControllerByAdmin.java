@@ -2,7 +2,6 @@ package ru.practicum.controller.admin;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import ru.practicum.model.dto.compilation.CompilationDto;
@@ -35,7 +34,7 @@ public class CompilationControllerByAdmin {
 
     @DeleteMapping("/{compId}/events/{eventId}")
     public void deleteEventOfCompilation(@PathVariable @PositiveOrZero Long compId,
-                                  @PathVariable @PositiveOrZero Long eventId) {
+                                         @PathVariable @PositiveOrZero Long eventId) {
         log.info("Получен запрос к эндпоинту DELETE, /admin/compilations/{compId}/events/{eventId}");
         compilationService.deleteEventOfCompilation(compId, eventId);
     }

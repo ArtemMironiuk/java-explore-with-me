@@ -7,15 +7,18 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.http.client.HttpComponentsClientHttpRequestFactory;
 import org.springframework.stereotype.Service;
 import org.springframework.web.util.DefaultUriBuilderFactory;
+import ru.practicum.handler.exception.ValidationException;
 
 import javax.servlet.http.HttpServletRequest;
-import java.time.LocalDateTime;
-import java.util.List;
+import java.io.UnsupportedEncodingException;
+import java.net.URLEncoder;
+import java.nio.charset.StandardCharsets;
+import java.time.format.DateTimeFormatter;
 import java.util.Map;
 
 @Service
 public class StatsClient extends BaseClient {
-
+    DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
     private static final String API_PREFIX = "";
     @Value("${app-name}")
     private String appName;
@@ -36,14 +39,38 @@ public class StatsClient extends BaseClient {
         return post("/hit", new EndpointHit(appName, uri, ip));
     }
 
-    public ResponseEntity<Object> getViews(LocalDateTime start, LocalDateTime end, List<String> uri, Boolean unique) {
+    public ResponseEntity<ViewStat[]> getViews(String start, String end, String[] uri, Boolean unique) {
+        String startEn = encode(start);
+        String endEn = encode(end);
         Map<String, Object> parameters = Map.of(
-                "start", start,
-                "end", end,
+                "start", startEn,
+                "end", endEn,
                 "uris", uri,
                 "unique", unique
         );
         return get("/stats?start={start}&end={end}&uris={uris}&unique={unique}", parameters);
+    }
+
+//    public Long getViews(HttpServletRequest request, Event event) {
+//        ResponseEntity<ViewStat[]> response = getViewStats(
+//                event.getPublishedOn().format(formatter),
+//                event.getEventDate().plusMinutes(1).format(formatter),
+//                new String[]{request.getRequestURI()},
+//                false);
+//        Long views = response.getBody()[0].getHits();
+//        return views;
+//    }
+
+
+    private String encode(String path) {
+        try {
+            path = URLEncoder.encode(path, StandardCharsets.UTF_8.toString());
+        } catch (ValidationException e) {
+            throw new ValidationException("Error encoding parameter");
+        } catch (UnsupportedEncodingException e) {
+            throw new RuntimeException(e);
+        }
+        return path;
     }
 
 }

@@ -2,7 +2,6 @@ package ru.practicum.controller.admin;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import ru.practicum.model.dto.user.NewUserRequest;
 import ru.practicum.model.dto.user.UserDto;
@@ -21,7 +20,7 @@ public class UserControllerByAdmin {
     private final UserService userService;
 
     @GetMapping
-    public List<UserDto> findUsers(@RequestParam (name = "ids", required = false)  long[] ids,
+    public List<UserDto> findUsers(@RequestParam(name = "ids", required = false) long[] ids,
                                    @RequestParam(name = "from", defaultValue = "0") Integer from,
                                    @RequestParam(name = "size", defaultValue = "10") Integer size) {
         log.info("Получен запрос к эндпоинту GET, /admin/users");

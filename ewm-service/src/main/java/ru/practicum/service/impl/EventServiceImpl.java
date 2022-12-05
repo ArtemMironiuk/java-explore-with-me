@@ -246,7 +246,7 @@ public class EventServiceImpl implements EventService {
                 .orElseThrow(() -> new ObjectNotFoundException("Нет такого пользователя!"));
         Event event = eventRepository.findById(eventId)
                 .orElseThrow(() -> new ObjectNotFoundException("Нет такого события!"));
-        if (event.getInitiator().getId() != userId) {
+        if (!event.getInitiator().getId().equals(userId)) {
             throw new ValidationException("Пользователь не добавлял это событие!");
         }
         return EventMapper.toEventFullDto(event);
@@ -256,7 +256,7 @@ public class EventServiceImpl implements EventService {
     public EventFullDto cancelEventOfUser(Long userId, Long eventId) {
         Event event = eventRepository.findById(eventId)
                 .orElseThrow(() -> new ObjectNotFoundException("Нет такого события!"));
-        if (event.getInitiator().getId() != userId) {
+        if (!event.getInitiator().getId().equals(userId)) {
             throw new ValidationException("Пользователь не добавлял это событие!");
         }
         if (!event.getRequestModeration() && !event.getState().equals(StateEvent.PENDING)) {

@@ -43,7 +43,7 @@ public class RequestServiceImpl implements RequestService {
                 .orElseThrow(() -> new ObjectNotFoundException("Нет такой заявки!"));
         Event event = eventRepository.findByIdAndAndInitiator_Id(eventId, userId)
                 .orElseThrow(() -> new ObjectNotFoundException("Нет такого события от этого пользователя!"));
-        if (event.getParticipantLimit() == 0 || event.getRequestModeration() == false) {
+        if (event.getParticipantLimit() == 0 || !event.getRequestModeration()) {
             request.setStatus(StateRequest.CONFIRMED);
             return RequestMapper.toParticipationRequestDto(requestRepository.save(request));
         }
@@ -87,7 +87,7 @@ public class RequestServiceImpl implements RequestService {
                 .orElseThrow(() -> new ObjectNotFoundException("Нет такого пользователя!"));
         Event event = eventRepository.findById(eventId)
                 .orElseThrow(() -> new ObjectNotFoundException("Нет такого события!"));
-        if (user.getId() == event.getInitiator().getId()) {
+        if (user.getId().equals(event.getInitiator().getId())) {
             throw new ValidationException("Инициатор события не может добавить запрос на участие в своём событии!");
         }
         if (event.getState().equals(StateEvent.PENDING) || event.getState().equals(StateEvent.CANCELED)) {
@@ -97,7 +97,7 @@ public class RequestServiceImpl implements RequestService {
         if (event.getParticipantLimit() == countRequest) {
             throw new ValidationException(" достигнут лимит запросов на участие!");
         }
-        if (event.getRequestModeration() == false) {
+        if (!event.getRequestModeration()) {
             Request request = RequestMapper.toRequest(user, event, StateRequest.CONFIRMED);
             return RequestMapper.toParticipationRequestDto(requestRepository.save(request));
         }

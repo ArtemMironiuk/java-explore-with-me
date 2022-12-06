@@ -5,7 +5,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 import ru.practicum.model.Request;
-import ru.practicum.model.StateRequest;
+import ru.practicum.model.enumstatus.StateRequest;
 
 import java.util.List;
 import java.util.Optional;

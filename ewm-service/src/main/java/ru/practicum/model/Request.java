@@ -1,15 +1,14 @@
 package ru.practicum.model;
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
+import ru.practicum.model.enumstatus.StateRequest;
 
 import javax.persistence.*;
 import javax.validation.constraints.PositiveOrZero;
 import java.time.LocalDateTime;
 
-@Data
+@Getter
+@Setter
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
@@ -24,7 +23,7 @@ public class Request {
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "requester", nullable = false)
     private User requester;
-    @OneToOne
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "event", nullable = false)
     private Event event;
     @Column(name = "created", nullable = false)

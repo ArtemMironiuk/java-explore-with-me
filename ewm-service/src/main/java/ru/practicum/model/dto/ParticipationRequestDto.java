@@ -1,7 +1,7 @@
 package ru.practicum.model.dto;
 
 import lombok.*;
-import ru.practicum.model.StateRequest;
+import ru.practicum.model.enumstatus.StateRequest;
 
 import java.time.LocalDateTime;
 

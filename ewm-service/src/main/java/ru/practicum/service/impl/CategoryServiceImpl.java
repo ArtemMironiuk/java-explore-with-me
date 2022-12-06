@@ -41,7 +41,6 @@ public class CategoryServiceImpl implements CategoryService {
     public CategoryDto findCategoryById(Long catId) {
         Category category = categoryRepository.findById(catId)
                 .orElseThrow(() -> new ObjectNotFoundException("Category c таким id нет в базе"));
-        //TODO исправить exception
         return CategoryMapper.toCategoryDto(category);
     }
 
@@ -72,7 +71,6 @@ public class CategoryServiceImpl implements CategoryService {
     public void deleteCategory(Long categoryId) {
         categoryRepository.findById(categoryId)
                 .orElseThrow(() -> new ObjectNotFoundException("Нет такой категории!"));
-        //TODO exception
         categoryRepository.deleteById(categoryId);
     }
 }

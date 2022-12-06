@@ -1,7 +1,7 @@
 package ru.practicum.service;
 
-import ru.practicum.model.Sort;
-import ru.practicum.model.StateEvent;
+import ru.practicum.model.enumstatus.Sort;
+import ru.practicum.model.enumstatus.StateEvent;
 import ru.practicum.model.dto.event.AdminUpdateEventRequest;
 import ru.practicum.model.dto.event.EventFullDto;
 import ru.practicum.model.dto.event.EventShortDto;

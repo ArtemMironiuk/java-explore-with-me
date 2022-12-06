@@ -23,15 +23,33 @@ public class CompilationMapper {
     }
 
     public static CompilationDto toCompilationDto(Compilation compilation) {
-        Set<EventShortDto> eventShorts = new HashSet<>();
+        Set<CompilationDto.EventShortDto> eventShorts = new HashSet<>();
         for (Event event : compilation.getEvents()) {
-            eventShorts.add(EventMapper.toEventShortDto(event));
+            eventShorts.add(toEventShortDto(event));
         }
         return CompilationDto.builder()
                 .events(eventShorts)
                 .id(compilation.getId())
                 .pinned(compilation.getPinned())
                 .title(compilation.getTitle())
+                .build();
+    }
+
+    private static CompilationDto.EventShortDto toEventShortDto(Event event) {
+        return CompilationDto.EventShortDto.builder()
+                .id(event.getId())
+                .annotation(event.getAnnotation())
+                .category(CompilationDto.EventShortDto.CategoryDto.builder()
+                        .id(event.getCategory().getId())
+                        .name(event.getCategory().getName())
+                        .build())
+                .eventDate(event.getEventDate())
+                .initiator(CompilationDto.EventShortDto.UserShortDto.builder()
+                        .id(event.getInitiator().getId())
+                        .name(event.getInitiator().getName())
+                        .build())
+                .paid(event.getPaid())
+                .title(event.getTitle())
                 .build();
     }
 }

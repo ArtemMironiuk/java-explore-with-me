@@ -1,9 +1,7 @@
 package ru.practicum.model;
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
+import ru.practicum.model.enumstatus.StateEvent;
 
 import javax.persistence.*;
 import javax.validation.constraints.Future;
@@ -12,7 +10,8 @@ import javax.validation.constraints.NotNull;
 import javax.validation.constraints.PositiveOrZero;
 import java.time.LocalDateTime;
 
-@Data
+@Getter
+@Setter
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
@@ -35,7 +34,7 @@ public class Event {
     @Column(name = "description")
     private String description;
     @NotNull
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "category_id", nullable = false)
     private Category category;
     @Column(name = "confirmed_requests")
@@ -52,7 +51,7 @@ public class Event {
     @Column(name = "participant_limit")
     private Integer participantLimit;
     @NotNull
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "initiator_id", nullable = false)
     private User initiator;
     @NotNull

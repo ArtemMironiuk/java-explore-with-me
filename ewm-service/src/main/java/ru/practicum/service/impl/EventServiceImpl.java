@@ -16,6 +16,9 @@ import ru.practicum.model.dto.event.AdminUpdateEventRequest;
 import ru.practicum.model.dto.event.EventFullDto;
 import ru.practicum.model.dto.event.EventShortDto;
 import ru.practicum.model.dto.event.NewEventDto;
+import ru.practicum.model.enumstatus.Sort;
+import ru.practicum.model.enumstatus.StateEvent;
+import ru.practicum.model.enumstatus.StateRequest;
 import ru.practicum.repository.*;
 import ru.practicum.service.EventService;
 import ru.practicum.utils.mapper.EventMapper;
@@ -43,8 +46,7 @@ public class EventServiceImpl implements EventService {
     private final RequestRepository requestRepository;
     private final StatsClient statsClient;
 
-
-    DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+    private final DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
 
     @Override
     public List<EventFullDto> searchEvents(List<Long> users, List<StateEvent> stateEvents, List<Long> categories, LocalDateTime rangeStart,
@@ -172,7 +174,7 @@ public class EventServiceImpl implements EventService {
     @Override
     public List<EventShortDto> findEventsOfUser(Long userId, Integer from, Integer size) {
         Pageable pageable = PageRequest.of(from / size, size);
-        User user = userRepository.findById(userId)
+        userRepository.findById(userId)
                 .orElseThrow(() -> new ObjectNotFoundException("Нет такого пользователя!"));
         return eventRepository.findByInitiatorId(userId, pageable)
                 .stream()
@@ -183,7 +185,7 @@ public class EventServiceImpl implements EventService {
     @Transactional
     @Override
     public EventFullDto updateEvent(Long userId, NewEventDto updateEvent) {
-        User user = userRepository.findById(userId)
+        userRepository.findById(userId)
                 .orElseThrow(() -> new ObjectNotFoundException("Нет такого пользователя!"));
         Event event = eventRepository.findById(updateEvent.getEventId())
                 .orElseThrow(() -> new ObjectNotFoundException("Нет такого события!"));
@@ -242,7 +244,7 @@ public class EventServiceImpl implements EventService {
 
     @Override
     public EventFullDto findEventOfUser(Long userId, Long eventId) {
-        User user = userRepository.findById(userId)
+        userRepository.findById(userId)
                 .orElseThrow(() -> new ObjectNotFoundException("Нет такого пользователя!"));
         Event event = eventRepository.findById(eventId)
                 .orElseThrow(() -> new ObjectNotFoundException("Нет такого события!"));

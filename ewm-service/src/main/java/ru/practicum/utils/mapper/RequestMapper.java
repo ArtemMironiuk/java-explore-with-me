@@ -2,7 +2,7 @@ package ru.practicum.utils.mapper;
 
 import ru.practicum.model.Event;
 import ru.practicum.model.Request;
-import ru.practicum.model.StateRequest;
+import ru.practicum.model.enumstatus.StateRequest;
 import ru.practicum.model.User;
 import ru.practicum.model.dto.ParticipationRequestDto;
 
@@ -11,7 +11,7 @@ import java.time.format.DateTimeFormatter;
 
 public class RequestMapper {
 
-    static DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss.SSS");
+    private static final DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss.SSS");
 
     public static ParticipationRequestDto toParticipationRequestDto(Request request) {
         return ParticipationRequestDto.builder()

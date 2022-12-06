@@ -8,6 +8,8 @@ import ru.practicum.handler.exception.ObjectNotFoundException;
 import ru.practicum.handler.exception.ValidationException;
 import ru.practicum.model.*;
 import ru.practicum.model.dto.ParticipationRequestDto;
+import ru.practicum.model.enumstatus.StateEvent;
+import ru.practicum.model.enumstatus.StateRequest;
 import ru.practicum.repository.EventRepository;
 import ru.practicum.repository.RequestRepository;
 import ru.practicum.repository.UserRepository;
@@ -45,6 +47,8 @@ public class RequestServiceImpl implements RequestService {
                 .orElseThrow(() -> new ObjectNotFoundException("Нет такого события от этого пользователя!"));
         if (event.getParticipantLimit() == 0 || !event.getRequestModeration()) {
             request.setStatus(StateRequest.CONFIRMED);
+            event.setConfirmedRequests(event.getConfirmedRequests() + 1);
+            eventRepository.save(event);
             return RequestMapper.toParticipationRequestDto(requestRepository.save(request));
         }
         long countRequest = requestRepository.countByEvent_IdAndStatus(eventId, StateRequest.CONFIRMED);
@@ -53,12 +57,27 @@ public class RequestServiceImpl implements RequestService {
             return RequestMapper.toParticipationRequestDto(requestRepository.save(request));
         }
         request.setStatus(StateRequest.CONFIRMED);
+        event.setConfirmedRequests(event.getConfirmedRequests() + 1);
+        eventRepository.save(event);
         if (event.getParticipantLimit() <= countRequest + 1) {
             List<Request> requestsPending = requestRepository.findByEventIdAndStatus(eventId, StateRequest.PENDING);
-            for (Request requestNew : requestsPending) {
-                requestNew.setStatus(StateRequest.REJECTED);
-                requestRepository.save(requestNew);
-            }
+            List<Request> requestsRejected = requestsPending
+                    .stream()
+                    .map(request1 -> {
+                        Request req = new Request();
+                        req.setRequester(request1.getRequester());
+                        req.setEvent(request1.getEvent());
+                        req.setId(request1.getId());
+                        req.setCreated(request1.getCreated());
+                        req.setStatus(StateRequest.REJECTED);
+                        return req;
+                    })
+                    .collect(toList());
+//            for (Request requestNew : requestsPending) {
+//                requestNew.setStatus(StateRequest.REJECTED);
+////                requestRepository.save(requestNew);
+//            }
+            requestRepository.saveAll(requestsRejected);
         }
         return RequestMapper.toParticipationRequestDto(requestRepository.save(request));
     }
@@ -99,6 +118,8 @@ public class RequestServiceImpl implements RequestService {
         }
         if (!event.getRequestModeration()) {
             Request request = RequestMapper.toRequest(user, event, StateRequest.CONFIRMED);
+            event.setConfirmedRequests(event.getConfirmedRequests() + 1);
+            eventRepository.save(event);
             return RequestMapper.toParticipationRequestDto(requestRepository.save(request));
         }
         Request request = RequestMapper.toRequest(user, event, StateRequest.PENDING);
@@ -110,6 +131,12 @@ public class RequestServiceImpl implements RequestService {
     public ParticipationRequestDto cancelRequest(Long userId, Long requestId) {
         Request request = requestRepository.findByIdAndRequesterId(requestId, userId)
                 .orElseThrow(() -> new ObjectNotFoundException("Нет такой заявки!"));
+        if (request.getStatus().equals(StateRequest.CONFIRMED)) {
+            Event event = eventRepository.findById(request.getEvent()
+                    .getId()).orElseThrow(() -> new ObjectNotFoundException("Нет такого события!"));
+            event.setConfirmedRequests(event.getConfirmedRequests() - 1);
+            eventRepository.save(event);
+        }
         request.setStatus(StateRequest.CANCELED);
         return RequestMapper.toParticipationRequestDto(requestRepository.save(request));
     }

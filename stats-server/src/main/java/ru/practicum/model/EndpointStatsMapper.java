@@ -5,7 +5,6 @@ import ru.practicum.model.dto.EndpointHitDto;
 import java.time.LocalDateTime;
 
 public class EndpointStatsMapper {
-//    static DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss.SSS");
 
     public static Statistic toEndpointHit(EndpointHitDto endpointHitDto) {
         return Statistic.builder()

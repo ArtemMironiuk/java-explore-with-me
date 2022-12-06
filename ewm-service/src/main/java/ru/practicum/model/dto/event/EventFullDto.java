@@ -1,10 +1,7 @@
 package ru.practicum.model.dto.event;
 
 import lombok.*;
-import ru.practicum.model.Location;
-import ru.practicum.model.StateEvent;
-import ru.practicum.model.dto.category.CategoryDto;
-import ru.practicum.model.dto.user.UserShortDto;
+import ru.practicum.model.enumstatus.StateEvent;
 
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotEmpty;
@@ -45,4 +42,31 @@ public class EventFullDto {
     @NotBlank
     private String title;
     private Long views;
+
+    @Data
+    @Builder
+    @NoArgsConstructor
+    @AllArgsConstructor
+    public static class CategoryDto {
+        private Long id;
+        private String name;
+    }
+
+    @Data
+    @Builder
+    @NoArgsConstructor
+    @AllArgsConstructor
+    public static class UserShortDto {
+        private Long id;
+        private String name;
+    }
+
+    @Data
+    @Builder
+    @NoArgsConstructor
+    @AllArgsConstructor
+    public static class Location {
+        private Float lat;
+        private Float lon;
+    }
 }

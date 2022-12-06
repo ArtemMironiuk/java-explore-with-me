@@ -37,4 +37,22 @@ public class EventShortDto {
     @NotBlank
     private String title;
     private Integer views;
+
+    @Data
+    @Builder
+    @NoArgsConstructor
+    @AllArgsConstructor
+    public static class CategoryDto {
+        private Long id;
+        private String name;
+    }
+
+    @Data
+    @Builder
+    @NoArgsConstructor
+    @AllArgsConstructor
+    public static class UserShortDto {
+        private Long id;
+        private String name;
+    }
 }

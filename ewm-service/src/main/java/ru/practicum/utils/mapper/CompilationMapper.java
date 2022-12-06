@@ -4,7 +4,6 @@ import ru.practicum.model.Compilation;
 import ru.practicum.model.Event;
 import ru.practicum.model.dto.compilation.CompilationDto;
 import ru.practicum.model.dto.compilation.NewCompilationDto;
-import ru.practicum.model.dto.event.EventShortDto;
 
 import java.util.HashSet;
 import java.util.Set;

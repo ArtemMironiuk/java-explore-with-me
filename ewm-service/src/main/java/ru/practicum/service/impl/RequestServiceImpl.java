@@ -77,6 +77,7 @@ public class RequestServiceImpl implements RequestService {
 //                requestNew.setStatus(StateRequest.REJECTED);
 ////                requestRepository.save(requestNew);
 //            }
+            //TODO не проходит тест после изменения
             requestRepository.saveAll(requestsRejected);
         }
         return RequestMapper.toParticipationRequestDto(requestRepository.save(request));

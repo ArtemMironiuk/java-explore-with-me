@@ -2,8 +2,6 @@ package ru.practicum.model.dto.event;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.*;
-import ru.practicum.model.dto.category.CategoryDto;
-import ru.practicum.model.dto.user.UserShortDto;
 
 import javax.validation.constraints.Future;
 import javax.validation.constraints.NotBlank;

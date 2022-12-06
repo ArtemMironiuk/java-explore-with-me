@@ -47,8 +47,8 @@ public class RequestServiceImpl implements RequestService {
                 .orElseThrow(() -> new ObjectNotFoundException("Нет такого события от этого пользователя!"));
         if (event.getParticipantLimit() == 0 || !event.getRequestModeration()) {
             request.setStatus(StateRequest.CONFIRMED);
-            event.setConfirmedRequests(event.getConfirmedRequests() + 1);
-            eventRepository.save(event);
+//            event.setConfirmedRequests(event.getConfirmedRequests() + 1);
+//            eventRepository.save(event);
             return RequestMapper.toParticipationRequestDto(requestRepository.save(request));
         }
         long countRequest = requestRepository.countByEvent_IdAndStatus(eventId, StateRequest.CONFIRMED);
@@ -57,8 +57,8 @@ public class RequestServiceImpl implements RequestService {
             return RequestMapper.toParticipationRequestDto(requestRepository.save(request));
         }
         request.setStatus(StateRequest.CONFIRMED);
-        event.setConfirmedRequests(event.getConfirmedRequests() + 1);
-        eventRepository.save(event);
+//        event.setConfirmedRequests(event.getConfirmedRequests() + 1);
+//        eventRepository.save(event);
         if (event.getParticipantLimit() <= countRequest + 1) {
             List<Request> requestsPending = requestRepository.findByEventIdAndStatus(eventId, StateRequest.PENDING);
             List<Request> requestsRejected = requestsPending
@@ -75,7 +75,7 @@ public class RequestServiceImpl implements RequestService {
                     .collect(toList());
 //            for (Request requestNew : requestsPending) {
 //                requestNew.setStatus(StateRequest.REJECTED);
-////                requestRepository.save(requestNew);
+//                requestRepository.save(requestNew);
 //            }
             //TODO не проходит тест после изменения
             requestRepository.saveAll(requestsRejected);

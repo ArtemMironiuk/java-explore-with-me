@@ -6,6 +6,7 @@ import org.springframework.web.bind.annotation.*;
 import ru.practicum.model.dto.event.EventFullDto;
 import ru.practicum.model.dto.event.EventShortDto;
 import ru.practicum.model.dto.event.NewEventDto;
+import ru.practicum.model.dto.event.UpdateEventRequest;
 import ru.practicum.service.EventService;
 
 import javax.validation.Valid;
@@ -23,7 +24,7 @@ public class EventControllerPrivate {
 
     @PatchMapping
     public EventFullDto updateEvent(@PathVariable @NotNull Long userId,
-                                    @RequestBody NewEventDto updateEvent) {
+                                    @RequestBody UpdateEventRequest updateEvent) {
         log.info("Получен запрос к эндпоинту PATCH, /users/{userId}/events");
         return eventService.updateEvent(userId, updateEvent);
     }

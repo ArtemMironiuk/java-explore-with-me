@@ -12,10 +12,7 @@ import ru.practicum.client.ViewStat;
 import ru.practicum.handler.exception.ObjectNotFoundException;
 import ru.practicum.handler.exception.ValidationException;
 import ru.practicum.model.*;
-import ru.practicum.model.dto.event.AdminUpdateEventRequest;
-import ru.practicum.model.dto.event.EventFullDto;
-import ru.practicum.model.dto.event.EventShortDto;
-import ru.practicum.model.dto.event.NewEventDto;
+import ru.practicum.model.dto.event.*;
 import ru.practicum.model.enumstatus.Sort;
 import ru.practicum.model.enumstatus.StateEvent;
 import ru.practicum.model.enumstatus.StateRequest;
@@ -105,8 +102,8 @@ public class EventServiceImpl implements EventService {
     @Transactional
     public EventFullDto publishingEvent(Long eventId) {
         Event event = eventRepository.findById(eventId).orElseThrow(() -> new ObjectNotFoundException("Нет такого события!"));
- //       if (event.getState().equals(StateEvent.CANCELED) || event.getState().equals(StateEvent.PUBLISHED))
-  //          throw new ValidationException("! Событие уже отменено или опубликовано!");
+        if (event.getState().equals(StateEvent.CANCELED) || event.getState().equals(StateEvent.PUBLISHED))
+            throw new ValidationException("! Событие уже отменено или опубликовано!");
         LocalDateTime dateAndTimeNowPublish = LocalDateTime.now();
         Duration duration = Duration.between(dateAndTimeNowPublish, event.getEventDate());
         if (duration.toMinutes() < 60)
@@ -184,16 +181,16 @@ public class EventServiceImpl implements EventService {
 
     @Transactional
     @Override
-    public EventFullDto updateEvent(Long userId, NewEventDto updateEvent) {
+    public EventFullDto updateEvent(Long userId, UpdateEventRequest updateEvent) {
         userRepository.findById(userId)
                 .orElseThrow(() -> new ObjectNotFoundException("Нет такого пользователя!"));
         Event event = eventRepository.findById(updateEvent.getEventId())
                 .orElseThrow(() -> new ObjectNotFoundException("Нет такого события!"));
         Duration duration = Duration.between(LocalDateTime.now().withNano(0), event.getEventDate());
         if (duration.toMinutes() >= 120) {
-            if (event.getState().equals(StateEvent.CANCELED) || event.getRequestModeration()) {
+            if (event.getState().equals(StateEvent.CANCELED) || event.getState().equals(StateEvent.PENDING)) {
                 if (event.getState().equals(StateEvent.CANCELED)) {
-                    event.setRequestModeration(true);
+                    event.setState(StateEvent.PENDING);
                 }
                 if (updateEvent.getAnnotation() != null && !updateEvent.getAnnotation().isEmpty()) {
                     event.setAnnotation(updateEvent.getAnnotation());
@@ -235,10 +232,6 @@ public class EventServiceImpl implements EventService {
         Location location = locationRepository.save(LocationMapper.toLocation(newEvent.getLocation()));
         Event event = EventMapper.toEvent(user, location, category, newEvent);
         event.setConfirmedRequests(0);
-        if (!event.getRequestModeration()) {
-            event.setPublishedOn(LocalDateTime.now());
-            event.setState(StateEvent.PUBLISHED);
-        }
         event.setState(StateEvent.PENDING);
         return EventMapper.toEventFullDto(eventRepository.save(event));
     }

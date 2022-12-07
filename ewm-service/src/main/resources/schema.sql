@@ -35,7 +35,7 @@ CREATE TABLE IF NOT EXISTS events (
     annotation VARCHAR(2000) NOT NULL,
     description VARCHAR(7000),
     category_id BIGINT NOT NULL,
-    confirmed_requests INTEGER,
+    confirmed_requests INTEGER default 0,
     event_date TIMESTAMP WITHOUT TIME ZONE,
     paid BOOLEAN NOT NULL DEFAULT false,
     request_moderation BOOLEAN DEFAULT false,

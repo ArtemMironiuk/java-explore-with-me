@@ -4,10 +4,6 @@ import lombok.*;
 import ru.practicum.model.enumstatus.StateEvent;
 
 import javax.persistence.*;
-import javax.validation.constraints.Future;
-import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.NotNull;
-import javax.validation.constraints.PositiveOrZero;
 import java.time.LocalDateTime;
 
 @Getter
@@ -21,48 +17,36 @@ public class Event {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "event_id")
-    @PositiveOrZero
     private Long id;
-    @NotNull
-    @NotBlank
-    @Column(name = "title")
+    @Column(name = "title", nullable = false, length = 120)
     private String title;
-    @NotNull
-    @NotBlank
-    @Column(name = "annotation", nullable = false)
+    @Column(name = "annotation", nullable = false, length = 2000)
     private String annotation;
-    @Column(name = "description")
+    @Column(name = "description", length = 7000)
     private String description;
-    @NotNull
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "category_id", nullable = false)
     private Category category;
     @Column(name = "confirmed_requests")
     private Integer confirmedRequests;
-    @Future
-    @NotNull
     @Column(name = "event_date", nullable = false)
     private LocalDateTime eventDate;
-    @NotNull
     @Column(name = "paid", nullable = false)
     private Boolean paid;
     @Column(name = "request_moderation")
     private Boolean requestModeration;
     @Column(name = "participant_limit")
     private Integer participantLimit;
-    @NotNull
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "initiator_id", nullable = false)
     private User initiator;
-    @NotNull
     @Column(name = "created_on", nullable = false)
     private LocalDateTime createdOn;
     @Column(name = "published_on")
     private LocalDateTime publishedOn;
-    @Column(name = "event_state")
+    @Column(name = "event_state", length = 100)
     @Enumerated(EnumType.STRING)
     private StateEvent state;
-    @NotNull
     @OneToOne
     @JoinColumn(name = "location", nullable = false)
     private Location location;

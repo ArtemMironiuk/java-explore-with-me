@@ -234,6 +234,7 @@ public class EventServiceImpl implements EventService {
                 .orElseThrow(() -> new ObjectNotFoundException("Нет такой категории!"));
         Location location = locationRepository.save(LocationMapper.toLocation(newEvent.getLocation()));
         Event event = EventMapper.toEvent(user, location, category, newEvent);
+        event.setConfirmedRequests(0);
         if (!event.getRequestModeration()) {
             event.setPublishedOn(LocalDateTime.now());
             event.setState(StateEvent.PUBLISHED);

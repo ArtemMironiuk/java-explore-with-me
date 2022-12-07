@@ -4,7 +4,6 @@ import lombok.*;
 import ru.practicum.model.enumstatus.StateRequest;
 
 import javax.persistence.*;
-import javax.validation.constraints.PositiveOrZero;
 import java.time.LocalDateTime;
 
 @Getter
@@ -18,7 +17,6 @@ public class Request {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id")
-    @PositiveOrZero
     private Long id;
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "requester", nullable = false)
@@ -28,6 +26,7 @@ public class Request {
     private Event event;
     @Column(name = "created", nullable = false)
     private LocalDateTime created;
+    @Column(name = "status", length = 150)
     @Enumerated(EnumType.STRING)
     private StateRequest status;
 }

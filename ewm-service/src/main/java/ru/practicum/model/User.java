@@ -4,9 +4,6 @@ import lombok.*;
 
 import javax.persistence.*;
 import javax.validation.constraints.Email;
-import javax.validation.constraints.NotNull;
-import javax.validation.constraints.PositiveOrZero;
-import javax.validation.constraints.Size;
 
 @Getter
 @Setter
@@ -19,14 +16,10 @@ public class User {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "user_id")
-    @PositiveOrZero
     private Long id;
-    @Column(name = "name", nullable = false)
-    @NotNull
+    @Column(name = "name", nullable = false, length = 50)
     private String name;
-    @Column(name = "email", nullable = false, unique = true, length = 512)
-    @Size(min = 1, max = 512)
+    @Column(name = "email", nullable = false, unique = true, length = 75)
     @Email
-    @NotNull
     private String email;
 }

@@ -97,6 +97,7 @@ public class EventMapper {
                 .annotation(newEvent.getAnnotation())
                 .category(category)
                 .createdOn(LocalDateTime.now().withNano(0))
+                .confirmedRequests(0)
                 .description(newEvent.getDescription())
                 .eventDate(LocalDateTime.parse(newEvent.getEventDate(), formatter))
                 .initiator(user)

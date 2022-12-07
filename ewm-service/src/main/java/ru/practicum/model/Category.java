@@ -1,15 +1,11 @@
 package ru.practicum.model;
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import javax.persistence.*;
-import javax.validation.constraints.NotNull;
-import javax.validation.constraints.PositiveOrZero;
 
-@Data
+@Getter
+@Setter
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
@@ -20,9 +16,7 @@ public class Category {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id")
-    @PositiveOrZero
     private Long id;
-    @Column(name = "name", nullable = false, unique = true)
-    @NotNull
+    @Column(name = "name", nullable = false, unique = true, length = 50)
     private String name;
 }

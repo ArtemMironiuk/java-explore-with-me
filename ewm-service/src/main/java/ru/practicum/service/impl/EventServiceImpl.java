@@ -105,8 +105,8 @@ public class EventServiceImpl implements EventService {
     @Transactional
     public EventFullDto publishingEvent(Long eventId) {
         Event event = eventRepository.findById(eventId).orElseThrow(() -> new ObjectNotFoundException("Нет такого события!"));
-        if (event.getState().equals(StateEvent.CANCELED) || event.getState().equals(StateEvent.PUBLISHED))
-            throw new ValidationException("! Событие уже отменено или опубликовано!");
+ //       if (event.getState().equals(StateEvent.CANCELED) || event.getState().equals(StateEvent.PUBLISHED))
+  //          throw new ValidationException("! Событие уже отменено или опубликовано!");
         LocalDateTime dateAndTimeNowPublish = LocalDateTime.now();
         Duration duration = Duration.between(dateAndTimeNowPublish, event.getEventDate());
         if (duration.toMinutes() < 60)

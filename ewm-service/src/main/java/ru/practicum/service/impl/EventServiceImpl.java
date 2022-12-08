@@ -217,7 +217,8 @@ public class EventServiceImpl implements EventService {
                 }
                 EventFullDto eventFull = EventMapper.toEventFullDto(eventRepository.save(event));
                 eventFull.setViews(statsClient.getViewsStat(event));
-                return EventMapper.toEventFullDto(eventRepository.save(event));
+//                return EventMapper.toEventFullDto(eventRepository.save(event));
+                return eventFull;
             }
             throw new ValidationException("Событие либо опубликовано, либо не находится в состоянии ожидания модерации");
         }

@@ -73,11 +73,6 @@ public class RequestServiceImpl implements RequestService {
                         return req;
                     })
                     .collect(toList());
-//            for (Request requestNew : requestsPending) {
-//                requestNew.setStatus(StateRequest.REJECTED);
-//                requestRepository.save(requestNew);
-//            }
-            //TODO не проходит тест после изменения
             requestRepository.saveAll(requestsRejected);
         }
         return RequestMapper.toParticipationRequestDto(requestRepository.save(request));

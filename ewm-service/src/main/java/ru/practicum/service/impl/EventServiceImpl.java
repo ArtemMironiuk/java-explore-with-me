@@ -158,13 +158,14 @@ public class EventServiceImpl implements EventService {
         event.setConfirmedRequests(Integer.valueOf(String.valueOf(requestRepository.countByEvent_IdAndStatus(id, StateRequest.CONFIRMED))));
         EventFullDto eventFullDto = EventMapper.toEventFullDto(event);
         statsClient.save(request);
-        ResponseEntity<ViewStat[]> response = statsClient.getViews(
-                event.getPublishedOn().format(formatter),
-                LocalDateTime.now().plusMinutes(1).format(formatter),
-                new String[]{request.getRequestURI()},
-                false);
-        Long views = response.getBody()[0].getHits();
-        eventFullDto.setViews(views);
+//        ResponseEntity<ViewStat[]> response = statsClient.getViews(
+//                event.getPublishedOn().format(formatter),
+//                LocalDateTime.now().plusMinutes(1).format(formatter),
+//                new String[]{request.getRequestURI()},
+//                false);
+//        Long views = response.getBody()[0].getHits();
+//        eventFullDto.setViews(views);
+        eventFullDto.setViews(statsClient.getViewsStat(request, event));
         return eventFullDto;
     }
 

@@ -8,6 +8,7 @@ import org.springframework.http.client.HttpComponentsClientHttpRequestFactory;
 import org.springframework.stereotype.Service;
 import org.springframework.web.util.DefaultUriBuilderFactory;
 import ru.practicum.handler.exception.ValidationException;
+import ru.practicum.model.Event;
 
 import javax.servlet.http.HttpServletRequest;
 import java.io.UnsupportedEncodingException;
@@ -51,15 +52,15 @@ public class StatsClient extends BaseClient {
         return get("/stats?start={start}&end={end}&uris={uris}&unique={unique}", parameters);
     }
 
-//    public Long getViews(HttpServletRequest request, Event event) {
-//        ResponseEntity<ViewStat[]> response = getViewStats(
-//                event.getPublishedOn().format(formatter),
-//                event.getEventDate().plusMinutes(1).format(formatter),
-//                new String[]{request.getRequestURI()},
-//                false);
-//        Long views = response.getBody()[0].getHits();
-//        return views;
-//    }
+    public Long getViewsStat(HttpServletRequest request, Event event) {
+        ResponseEntity<ViewStat[]> response = getViews(
+                event.getPublishedOn().format(formatter),
+                event.getEventDate().plusMinutes(1).format(formatter),
+                new String[]{request.getRequestURI()},
+                false);
+        Long views = response.getBody()[0].getHits();
+        return views;
+    }
 
 
     private String encode(String path) {

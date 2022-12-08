@@ -48,7 +48,7 @@ public class CategoryServiceImpl implements CategoryService {
     @Override
     public CategoryDto createCategory(NewCategoryDto newCategory) {
         if (categoryRepository.countByName(newCategory.getName()) != 0) {
-            throw new ExistsElementException("Category with this name already exist");
+            throw new ExistsElementException("Категория с таким названием уже существует");
         }
         @Valid Category category = categoryRepository.save(CategoryMapper.toCategory(newCategory));
         return CategoryMapper.toCategoryDto(category);
@@ -58,7 +58,7 @@ public class CategoryServiceImpl implements CategoryService {
     @Override
     public CategoryDto updateCategory(CategoryDto categoryDto) {
         if (categoryRepository.countByName(categoryDto.getName()) != 0) {
-            throw new ExistsElementException("Category with this name already exist");
+            throw new ExistsElementException("Категория с таким названием уже существует");
         }
         Category category = categoryRepository.findById(categoryDto.getId())
                 .orElseThrow(() -> new ObjectNotFoundException("Category c таким id нет в базе"));

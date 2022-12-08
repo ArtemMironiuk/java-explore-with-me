@@ -33,7 +33,7 @@ public class EventMapper {
                 .build();
     }
 
-    public static EventFullDto toEventFullDto(Event event) {
+    public static EventFullDto toEventFullDto(Event event, Long views) {
         String createdOn = event.getCreatedOn().format(formatter);
         String eventDate = event.getEventDate().format(formatter);
         if (event.getPublishedOn() == null) {
@@ -61,6 +61,7 @@ public class EventMapper {
                     .requestModeration(event.getRequestModeration())
                     .state(event.getState())
                     .title(event.getTitle())
+                    .views(views)
                     .build();
         }
         String publishedOn = event.getPublishedOn().format(formatter);
@@ -89,6 +90,7 @@ public class EventMapper {
                 .requestModeration(event.getRequestModeration())
                 .state(event.getState())
                 .title(event.getTitle())
+                .views(views)
                 .build();
     }
 

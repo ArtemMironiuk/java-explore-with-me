@@ -49,7 +49,7 @@ public class EventServiceImpl implements EventService {
         Pageable pageable = PageRequest.of(from / size, size);
         return eventRepository.searchEvent(users, stateEvents, categories, rangeStart, rangeEnd, pageable)
                 .stream()
-                .map(EventMapper::toEventFullDto)
+                .map(event -> EventMapper.toEventFullDto(event, statsClient.getViewsStat(event)))
                 .collect(toList());
     }
 
@@ -93,7 +93,7 @@ public class EventServiceImpl implements EventService {
         if (eventRequest.getTitle() != null && !eventRequest.getTitle().isEmpty()) {
             event.setTitle(eventRequest.getTitle());
         }
-        return EventMapper.toEventFullDto(eventRepository.save(event));
+        return EventMapper.toEventFullDto(eventRepository.save(event), statsClient.getViewsStat(event));
     }
 
     @Override
@@ -108,7 +108,7 @@ public class EventServiceImpl implements EventService {
             throw new ValidationException("! Дата начала события должна быть не ранее чем за час от даты публикации");
         event.setPublishedOn(dateAndTimeNowPublish);
         event.setState(StateEvent.PUBLISHED);
-        return EventMapper.toEventFullDto(eventRepository.save(event));
+        return EventMapper.toEventFullDto(eventRepository.save(event), statsClient.getViewsStat(event));
     }
 
     @Override
@@ -119,7 +119,7 @@ public class EventServiceImpl implements EventService {
             throw new ValidationException("Статус события - PUBLISHED!");
         }
         event.setState(StateEvent.CANCELED);
-        return EventMapper.toEventFullDto(eventRepository.save(event));
+        return EventMapper.toEventFullDto(eventRepository.save(event), statsClient.getViewsStat(event));
     }
 
     @Override
@@ -154,18 +154,10 @@ public class EventServiceImpl implements EventService {
         Event event = eventRepository.findByIdAndState(id, StateEvent.PUBLISHED)
                 .orElseThrow(() -> new ObjectNotFoundException("Нет такого события!"));
         event.setConfirmedRequests(Integer.valueOf(String.valueOf(requestRepository.countByEvent_IdAndStatus(id, StateRequest.CONFIRMED))));
-        EventFullDto eventFullDto = EventMapper.toEventFullDto(event);
         statsClient.save(request);
-//        ResponseEntity<ViewStat[]> response = statsClient.getViews(
-//                event.getPublishedOn().format(formatter),
-//                LocalDateTime.now().plusMinutes(1).format(formatter),
-//                new String[]{request.getRequestURI()},
-//                false);
-//        Long views = response.getBody()[0].getHits();
-//        eventFullDto.setViews(views);
-
-        eventFullDto.setViews(statsClient.getViewsStat(event));
-        return eventFullDto;
+//        EventFullDto eventFullDto = EventMapper.toEventFullDto(event);
+//        eventFullDto.setViews(statsClient.getViewsStat(event));
+        return EventMapper.toEventFullDto(event, statsClient.getViewsStat(event));
     }
 
     @Override
@@ -215,10 +207,10 @@ public class EventServiceImpl implements EventService {
                 if (updateEvent.getTitle() != null) {
                     event.setTitle(updateEvent.getTitle());
                 }
-                EventFullDto eventFull = EventMapper.toEventFullDto(eventRepository.save(event));
-                eventFull.setViews(statsClient.getViewsStat(event));
-//                return EventMapper.toEventFullDto(eventRepository.save(event));
-                return eventFull;
+//                EventFullDto eventFull = EventMapper.toEventFullDto(eventRepository.save(event));
+//                eventFull.setViews(statsClient.getViewsStat(event));
+//                return eventFull;
+                return EventMapper.toEventFullDto(eventRepository.save(event), statsClient.getViewsStat(event));
             }
             throw new ValidationException("Событие либо опубликовано, либо не находится в состоянии ожидания модерации");
         }
@@ -236,7 +228,8 @@ public class EventServiceImpl implements EventService {
         Event event = EventMapper.toEvent(user, location, category, newEvent);
         event.setConfirmedRequests(0);
         event.setState(StateEvent.PENDING);
-        return EventMapper.toEventFullDto(eventRepository.save(event));
+        Event eventNew = eventRepository.save(event);
+        return EventMapper.toEventFullDto(eventNew, statsClient.getViewsStat(eventNew));
     }
 
     @Override
@@ -248,7 +241,7 @@ public class EventServiceImpl implements EventService {
         if (!event.getInitiator().getId().equals(userId)) {
             throw new ValidationException("Пользователь не добавлял это событие!");
         }
-        return EventMapper.toEventFullDto(event);
+        return EventMapper.toEventFullDto(event, statsClient.getViewsStat(event));
     }
 
     @Override
@@ -262,6 +255,6 @@ public class EventServiceImpl implements EventService {
             throw new ValidationException("Событие уже отмодерировано!");
         }
         event.setState(StateEvent.CANCELED);
-        return EventMapper.toEventFullDto(eventRepository.save(event));
+        return EventMapper.toEventFullDto(eventRepository.save(event), statsClient.getViewsStat(event));
     }
 }

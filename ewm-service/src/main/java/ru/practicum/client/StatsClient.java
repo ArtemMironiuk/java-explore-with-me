@@ -14,6 +14,7 @@ import javax.servlet.http.HttpServletRequest;
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
+import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Map;
 
@@ -54,12 +55,15 @@ public class StatsClient extends BaseClient {
 
     public Long getViewsStat(Event event) {
         ResponseEntity<ViewStat[]> response = getViews(
-                event.getPublishedOn().format(formatter),
-                event.getEventDate().plusMinutes(1).format(formatter),
+                event.getCreatedOn().format(formatter),
+                LocalDateTime.now().plusMinutes(1).format(formatter),
                 new String[]{"/events/" + event.getId()},
                 false);
-        Long views = response.getBody()[0].getHits();
-        return views;
+        if (response.getBody() != null) {
+            Long views = response.getBody()[0].getHits();
+            return views;
+        }
+        return 0L;
     }
 
 

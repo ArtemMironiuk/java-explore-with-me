@@ -20,7 +20,7 @@ import java.util.Map;
 
 @Service
 public class StatsClient extends BaseClient {
-    DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+    private final DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
     private static final String API_PREFIX = "";
     @Value("${app-name}")
     private String appName;

@@ -155,8 +155,6 @@ public class EventServiceImpl implements EventService {
                 .orElseThrow(() -> new ObjectNotFoundException("Нет такого события!"));
         event.setConfirmedRequests(Integer.valueOf(String.valueOf(requestRepository.countByEvent_IdAndStatus(id, StateRequest.CONFIRMED))));
         statsClient.save(request);
-//        EventFullDto eventFullDto = EventMapper.toEventFullDto(event);
-//        eventFullDto.setViews(statsClient.getViewsStat(event));
         return EventMapper.toEventFullDto(event, statsClient.getViewsStat(event));
     }
 
@@ -207,9 +205,6 @@ public class EventServiceImpl implements EventService {
                 if (updateEvent.getTitle() != null) {
                     event.setTitle(updateEvent.getTitle());
                 }
-//                EventFullDto eventFull = EventMapper.toEventFullDto(eventRepository.save(event));
-//                eventFull.setViews(statsClient.getViewsStat(event));
-//                return eventFull;
                 return EventMapper.toEventFullDto(eventRepository.save(event), statsClient.getViewsStat(event));
             }
             throw new ValidationException("Событие либо опубликовано, либо не находится в состоянии ожидания модерации");

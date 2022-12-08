@@ -1,4 +1,4 @@
 package ru.practicum.handler;
 
-public class ErrorResponse {
+public interface ApiSubError {
 }

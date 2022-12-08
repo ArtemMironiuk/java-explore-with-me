@@ -52,11 +52,11 @@ public class StatsClient extends BaseClient {
         return get("/stats?start={start}&end={end}&uris={uris}&unique={unique}", parameters);
     }
 
-    public Long getViewsStat(HttpServletRequest request, Event event) {
+    public Long getViewsStat(Event event) {
         ResponseEntity<ViewStat[]> response = getViews(
                 event.getPublishedOn().format(formatter),
                 event.getEventDate().plusMinutes(1).format(formatter),
-                new String[]{request.getRequestURI()},
+                new String[]{"/events/" + event.getId()},
                 false);
         Long views = response.getBody()[0].getHits();
         return views;

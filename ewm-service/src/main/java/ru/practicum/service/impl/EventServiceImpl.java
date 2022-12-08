@@ -163,7 +163,8 @@ public class EventServiceImpl implements EventService {
 //                false);
 //        Long views = response.getBody()[0].getHits();
 //        eventFullDto.setViews(views);
-        eventFullDto.setViews(statsClient.getViewsStat(request, event));
+
+        eventFullDto.setViews(statsClient.getViewsStat(event));
         return eventFullDto;
     }
 
@@ -214,6 +215,8 @@ public class EventServiceImpl implements EventService {
                 if (updateEvent.getTitle() != null) {
                     event.setTitle(updateEvent.getTitle());
                 }
+                EventFullDto eventFull = EventMapper.toEventFullDto(eventRepository.save(event));
+                eventFull.setViews(statsClient.getViewsStat(event));
                 return EventMapper.toEventFullDto(eventRepository.save(event));
             }
             throw new ValidationException("Событие либо опубликовано, либо не находится в состоянии ожидания модерации");

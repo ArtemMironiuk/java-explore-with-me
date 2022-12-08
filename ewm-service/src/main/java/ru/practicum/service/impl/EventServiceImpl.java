@@ -16,6 +16,7 @@ import ru.practicum.model.User;
 import ru.practicum.model.dto.comment.FullCommentDto;
 import ru.practicum.model.dto.event.*;
 import ru.practicum.model.enumstatus.Sort;
+import ru.practicum.model.enumstatus.StateComment;
 import ru.practicum.model.enumstatus.StateEvent;
 import ru.practicum.model.enumstatus.StateRequest;
 import ru.practicum.repository.*;
@@ -270,6 +271,6 @@ public class EventServiceImpl implements EventService {
     }
 
     private int countComment(Long eventId) {
-        return commentRepository.countByEventId(eventId);
+        return commentRepository.countByEventIdAndStatus(eventId, StateComment.PUBLISHED);
     }
 }

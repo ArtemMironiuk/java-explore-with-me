@@ -2,6 +2,8 @@ package ru.practicum.service.impl;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ru.practicum.handler.exception.ObjectNotFoundException;
@@ -12,6 +14,7 @@ import ru.practicum.model.User;
 import ru.practicum.model.dto.comment.FullCommentDto;
 import ru.practicum.model.dto.comment.NewCommentDto;
 import ru.practicum.model.dto.comment.UpdateCommentDto;
+import ru.practicum.model.enumstatus.StateComment;
 import ru.practicum.repository.CommentRepository;
 import ru.practicum.repository.EventRepository;
 import ru.practicum.repository.UserRepository;
@@ -20,6 +23,9 @@ import ru.practicum.utils.mapper.CommentMapper;
 
 import java.time.Duration;
 import java.time.LocalDateTime;
+import java.util.List;
+
+import static java.util.stream.Collectors.toList;
 
 @Service
 @Slf4j
@@ -72,5 +78,35 @@ public class CommentServiceImpl implements CommentService {
             throw new ValidationException("Пользователь не является автором комментария!");
         }
         commentRepository.deleteById(commentId);
+    }
+
+    @Override
+    public List<FullCommentDto> searchComments(List<Long> users, List<StateComment> states, List<Long> events,
+                                               LocalDateTime rangeStart, LocalDateTime rangeEnd, Integer from, Integer size) {
+        Pageable pageable = PageRequest.of(from / size, size);
+        return commentRepository.searchComments(users, states, events, rangeStart, rangeEnd, pageable)
+                .stream()
+                .map(CommentMapper::toFullCommentDto)
+                .collect(toList());
+    }
+
+    @Transactional
+    @Override
+    public FullCommentDto publishingComment(Long commentId) {
+        Comment comment = commentRepository.findById(commentId)
+                .orElseThrow(() -> new ObjectNotFoundException("Нет такого комментария!"));
+        if (comment.getStatus().equals(StateComment.PUBLISHED) || comment.getStatus().equals(StateComment.REJECTED)) {
+            throw new ValidationException("Комментарий уже отклонен или опубликован!");
+        }
+        comment.setStatus(StateComment.PUBLISHED);
+        return CommentMapper.toFullCommentDto(commentRepository.save(comment));
+    }
+
+    @Override
+    public FullCommentDto rejectionComment(Long commentId) {
+        Comment comment = commentRepository.findById(commentId)
+                .orElseThrow(() -> new ObjectNotFoundException("Нет такого комментария!"));
+        comment.setStatus(StateComment.REJECTED);
+        return CommentMapper.toFullCommentDto(commentRepository.save(comment));
     }
 }

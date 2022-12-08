@@ -91,6 +91,7 @@ CREATE TABLE IF NOT EXISTS comments (
     event_id BIGINT,
     author_id BIGINT,
     created TIMESTAMP WITHOUT TIME ZONE NOT NULL,
+    status VARCHAR(100),
 
     CONSTRAINT pk_comment PRIMARY KEY (id),
     CONSTRAINT fk_comment_on_author FOREIGN KEY(author_id) REFERENCES users(user_id),

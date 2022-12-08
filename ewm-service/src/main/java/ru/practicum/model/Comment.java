@@ -1,6 +1,7 @@
 package ru.practicum.model;
 
 import lombok.*;
+import ru.practicum.model.enumstatus.StateComment;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
@@ -26,4 +27,7 @@ public class Comment {
     private User author;
     @Column(name = "created", nullable = false)
     private LocalDateTime created;
+    @Column(name = "status", nullable = false)
+    @Enumerated(EnumType.STRING)
+    private StateComment status;
 }

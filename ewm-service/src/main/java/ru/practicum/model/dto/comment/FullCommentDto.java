@@ -5,6 +5,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import ru.practicum.model.enumstatus.StateComment;
 
 import java.time.LocalDateTime;
 
@@ -19,4 +20,5 @@ public class FullCommentDto {
     private Long eventId;
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss")
     private LocalDateTime created;
+    private StateComment status;
 }

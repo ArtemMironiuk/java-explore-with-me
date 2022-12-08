@@ -5,6 +5,7 @@ import ru.practicum.model.Event;
 import ru.practicum.model.User;
 import ru.practicum.model.dto.comment.FullCommentDto;
 import ru.practicum.model.dto.comment.NewCommentDto;
+import ru.practicum.model.enumstatus.StateComment;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
@@ -19,6 +20,7 @@ public class CommentMapper {
                 .event(event)
                 .author(user)
                 .created(LocalDateTime.parse(LocalDateTime.now().format(formatter)))
+                .status(StateComment.REJECTED)
                 .build();
     }
 
@@ -32,6 +34,7 @@ public class CommentMapper {
                 .authorName(comment.getAuthor().getName())
                 .eventId(comment.getEvent().getId())
                 .created(comment.getCreated())
+                .status(comment.getStatus())
                 .build();
     }
 }

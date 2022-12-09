@@ -21,6 +21,7 @@ public class EventFullDto {
     @NotEmpty
     private CategoryDto category;
     private Integer confirmedRequests;
+    private Integer comments;
     private String createdOn;
     private String description;
     @NotNull

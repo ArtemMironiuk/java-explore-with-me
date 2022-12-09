@@ -9,13 +9,19 @@ import org.springframework.transaction.annotation.Transactional;
 import ru.practicum.client.StatsClient;
 import ru.practicum.handler.exception.ObjectNotFoundException;
 import ru.practicum.handler.exception.ValidationException;
-import ru.practicum.model.*;
+import ru.practicum.model.Category;
+import ru.practicum.model.Event;
+import ru.practicum.model.Location;
+import ru.practicum.model.User;
+import ru.practicum.model.dto.comment.FullCommentDto;
 import ru.practicum.model.dto.event.*;
 import ru.practicum.model.enumstatus.Sort;
+import ru.practicum.model.enumstatus.StateComment;
 import ru.practicum.model.enumstatus.StateEvent;
 import ru.practicum.model.enumstatus.StateRequest;
 import ru.practicum.repository.*;
 import ru.practicum.service.EventService;
+import ru.practicum.utils.mapper.CommentMapper;
 import ru.practicum.utils.mapper.EventMapper;
 import ru.practicum.utils.mapper.LocationMapper;
 
@@ -39,6 +45,7 @@ public class EventServiceImpl implements EventService {
     private final CategoryRepository categoryRepository;
     private final LocationRepository locationRepository;
     private final RequestRepository requestRepository;
+    private final CommentRepository commentRepository;
     private final StatsClient statsClient;
 
     private final DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
@@ -49,7 +56,7 @@ public class EventServiceImpl implements EventService {
         Pageable pageable = PageRequest.of(from / size, size);
         return eventRepository.searchEvent(users, stateEvents, categories, rangeStart, rangeEnd, pageable)
                 .stream()
-                .map(event -> EventMapper.toEventFullDto(event, statsClient.getViewsStat(event)))
+                .map(event -> EventMapper.toEventFullDto(event, statsClient.getViewsStat(event), countCommentPublishedByEvent(event.getId())))
                 .collect(toList());
     }
 
@@ -93,7 +100,8 @@ public class EventServiceImpl implements EventService {
         if (eventRequest.getTitle() != null && !eventRequest.getTitle().isEmpty()) {
             event.setTitle(eventRequest.getTitle());
         }
-        return EventMapper.toEventFullDto(eventRepository.save(event), statsClient.getViewsStat(event));
+        Integer comments = countCommentPublishedByEvent(event.getId());
+        return EventMapper.toEventFullDto(eventRepository.save(event), statsClient.getViewsStat(event), comments);
     }
 
     @Override
@@ -108,7 +116,7 @@ public class EventServiceImpl implements EventService {
             throw new ValidationException("! Дата начала события должна быть не ранее чем за час от даты публикации");
         event.setPublishedOn(dateAndTimeNowPublish);
         event.setState(StateEvent.PUBLISHED);
-        return EventMapper.toEventFullDto(eventRepository.save(event), statsClient.getViewsStat(event));
+        return EventMapper.toEventFullDto(eventRepository.save(event), statsClient.getViewsStat(event), countCommentPublishedByEvent(eventId));
     }
 
     @Override
@@ -119,7 +127,7 @@ public class EventServiceImpl implements EventService {
             throw new ValidationException("Статус события - PUBLISHED!");
         }
         event.setState(StateEvent.CANCELED);
-        return EventMapper.toEventFullDto(eventRepository.save(event), statsClient.getViewsStat(event));
+        return EventMapper.toEventFullDto(eventRepository.save(event), statsClient.getViewsStat(event), countCommentPublishedByEvent(eventId));
     }
 
     @Override
@@ -155,7 +163,7 @@ public class EventServiceImpl implements EventService {
                 .orElseThrow(() -> new ObjectNotFoundException("Нет такого события!"));
         event.setConfirmedRequests(Integer.valueOf(String.valueOf(requestRepository.countByEvent_IdAndStatus(id, StateRequest.CONFIRMED))));
         statsClient.save(request);
-        return EventMapper.toEventFullDto(event, statsClient.getViewsStat(event));
+        return EventMapper.toEventFullDto(event, statsClient.getViewsStat(event), countCommentPublishedByEvent(event.getId()));
     }
 
     @Override
@@ -205,7 +213,7 @@ public class EventServiceImpl implements EventService {
                 if (updateEvent.getTitle() != null) {
                     event.setTitle(updateEvent.getTitle());
                 }
-                return EventMapper.toEventFullDto(eventRepository.save(event), statsClient.getViewsStat(event));
+                return EventMapper.toEventFullDto(eventRepository.save(event), statsClient.getViewsStat(event), countCommentPublishedByEvent(event.getId()));
             }
             throw new ValidationException("Событие либо опубликовано, либо не находится в состоянии ожидания модерации");
         }
@@ -224,7 +232,7 @@ public class EventServiceImpl implements EventService {
         event.setConfirmedRequests(0);
         event.setState(StateEvent.PENDING);
         Event eventNew = eventRepository.save(event);
-        return EventMapper.toEventFullDto(eventNew, statsClient.getViewsStat(eventNew));
+        return EventMapper.toEventFullDto(eventNew, statsClient.getViewsStat(eventNew), 0);
     }
 
     @Override
@@ -236,7 +244,7 @@ public class EventServiceImpl implements EventService {
         if (!event.getInitiator().getId().equals(userId)) {
             throw new ValidationException("Пользователь не добавлял это событие!");
         }
-        return EventMapper.toEventFullDto(event, statsClient.getViewsStat(event));
+        return EventMapper.toEventFullDto(event, statsClient.getViewsStat(event), countCommentPublishedByEvent(eventId));
     }
 
     @Override
@@ -250,6 +258,19 @@ public class EventServiceImpl implements EventService {
             throw new ValidationException("Событие уже отмодерировано!");
         }
         event.setState(StateEvent.CANCELED);
-        return EventMapper.toEventFullDto(eventRepository.save(event), statsClient.getViewsStat(event));
+        return EventMapper.toEventFullDto(eventRepository.save(event), statsClient.getViewsStat(event), countCommentPublishedByEvent(eventId));
+    }
+
+    @Override
+    public List<FullCommentDto> findCommentsByEventId(Long eventId, Integer from, Integer size) {
+        Pageable pageable = PageRequest.of(from / size, size);
+        return commentRepository.findCommentsByEventId(eventId, pageable)
+                .stream()
+                .map(CommentMapper::toFullCommentDto)
+                .collect(toList());
+    }
+
+    private int countCommentPublishedByEvent(Long eventId) {
+        return commentRepository.countByEventIdAndStatus(eventId, StateComment.PUBLISHED);
     }
 }

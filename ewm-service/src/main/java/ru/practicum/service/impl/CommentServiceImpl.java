@@ -54,8 +54,7 @@ public class CommentServiceImpl implements CommentService {
     public FullCommentDto updateComment(Long userId, UpdateCommentDto updateComment) {
         userRepository.findById(userId)
                 .orElseThrow(() -> new ObjectNotFoundException("Нет такого пользователя!"));
-        Comment comment = commentRepository.findById(updateComment.getId())
-                .orElseThrow(() -> new ObjectNotFoundException("Нет такого комментария!"));
+        Comment comment = checkingForComment(updateComment.getId());
         if (!userId.equals(comment.getAuthor().getId())) {
             throw new ValidationException("Пользователь не является автором комментария!");
         }
@@ -72,8 +71,7 @@ public class CommentServiceImpl implements CommentService {
     public void removeComment(Long userId, Long commentId) {
         userRepository.findById(userId)
                 .orElseThrow(() -> new ObjectNotFoundException("Нет такого пользователя!"));
-        Comment comment = commentRepository.findById(commentId)
-                .orElseThrow(() -> new ObjectNotFoundException("Нет такого комментария!"));
+        Comment comment = checkingForComment(commentId);
         if (!userId.equals(comment.getAuthor().getId())) {
             throw new ValidationException("Пользователь не является автором комментария!");
         }
@@ -93,8 +91,7 @@ public class CommentServiceImpl implements CommentService {
     @Transactional
     @Override
     public FullCommentDto publishingComment(Long commentId) {
-        Comment comment = commentRepository.findById(commentId)
-                .orElseThrow(() -> new ObjectNotFoundException("Нет такого комментария!"));
+        Comment comment = checkingForComment(commentId);
         if (comment.getStatus().equals(StateComment.PUBLISHED) || comment.getStatus().equals(StateComment.REJECTED)) {
             throw new ValidationException("Комментарий уже отклонен или опубликован!");
         }
@@ -104,9 +101,13 @@ public class CommentServiceImpl implements CommentService {
 
     @Override
     public FullCommentDto rejectionComment(Long commentId) {
-        Comment comment = commentRepository.findById(commentId)
-                .orElseThrow(() -> new ObjectNotFoundException("Нет такого комментария!"));
+        Comment comment = checkingForComment(commentId);
         comment.setStatus(StateComment.REJECTED);
         return CommentMapper.toFullCommentDto(commentRepository.save(comment));
+    }
+
+    private Comment checkingForComment(Long commentId) {
+        return commentRepository.findById(commentId)
+                .orElseThrow(() -> new ObjectNotFoundException("Нет такого комментария!"));
     }
 }

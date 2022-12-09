@@ -16,6 +16,7 @@ import java.time.LocalDateTime;
 public class FullCommentDto {
     private Long id;
     private String text;
+    private Long authorId;
     private String authorName;
     private Long eventId;
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss")

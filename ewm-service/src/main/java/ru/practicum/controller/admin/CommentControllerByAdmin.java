@@ -35,7 +35,7 @@ public class CommentControllerByAdmin {
     }
 
     @PatchMapping("/{commentId}/publish")
-    public FullCommentDto publishingComment(@PathVariable Long commentId) {
+    public FullCommentDto publishingComment(@PathVariable @PositiveOrZero Long commentId) {
         log.info("Получен запрос к эндпоинту PATCH, /admin/comments/{commentId}/publish");
         return commentService.publishingComment(commentId);
     }

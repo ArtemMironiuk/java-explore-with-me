@@ -20,7 +20,7 @@ public class CommentMapper {
                 .event(event)
                 .author(user)
                 .created(LocalDateTime.parse(LocalDateTime.now().format(formatter)))
-                .status(StateComment.REJECTED)
+                .status(StateComment.PENDING)
                 .build();
     }
 
@@ -31,6 +31,7 @@ public class CommentMapper {
         return FullCommentDto.builder()
                 .id(comment.getId())
                 .text(comment.getText())
+                .authorId(comment.getAuthor().getId())
                 .authorName(comment.getAuthor().getName())
                 .eventId(comment.getEvent().getId())
                 .created(comment.getCreated())

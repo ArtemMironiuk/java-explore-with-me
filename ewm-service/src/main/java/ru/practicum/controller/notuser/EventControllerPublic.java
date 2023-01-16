@@ -5,9 +5,10 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
-import ru.practicum.model.enumstatus.Sort;
+import ru.practicum.model.dto.comment.FullCommentDto;
 import ru.practicum.model.dto.event.EventFullDto;
 import ru.practicum.model.dto.event.EventShortDto;
+import ru.practicum.model.enumstatus.Sort;
 import ru.practicum.service.EventService;
 
 import javax.servlet.http.HttpServletRequest;
@@ -47,5 +48,13 @@ public class EventControllerPublic {
     public EventFullDto findEventById(@PathVariable @PositiveOrZero Long id, HttpServletRequest request) {
         log.info("Получен запрос к эндпоинту GET, /events/id");
         return eventService.findEventById(id, request);
+    }
+
+    @GetMapping("/{eventId}/comments")
+    public List<FullCommentDto> findCommentsByEventId(@PathVariable @PositiveOrZero Long eventId,
+                                                      @RequestParam(name = "from", defaultValue = "0") Integer from,
+                                                      @RequestParam(name = "size", defaultValue = "10") Integer size) {
+        log.info("Получен запрос к эндпоинту GET, /events/eventId/comments");
+        return eventService.findCommentsByEventId(eventId, from, size);
     }
 }

@@ -134,4 +134,20 @@ public interface EventService {
      * @return список комментария
      */
     List<FullCommentDto> findCommentsByEventId(Long eventId, Integer from, Integer size);
+
+    /**
+     * Добавление лайка событию от текущего пользователя
+     * @param userId id текущего пользователя
+     * @param eventId id события
+     * @return
+     */
+    EventFullDto addLikeEvent(Long userId, Long eventId);
+
+    /**
+     * Добавление дизлайка событию от текущего пользователя
+     * @param userId id текущего пользователя
+     * @param eventId id события
+     * @return
+     */
+    EventFullDto addDislikeEvent(Long userId, Long eventId);
 }

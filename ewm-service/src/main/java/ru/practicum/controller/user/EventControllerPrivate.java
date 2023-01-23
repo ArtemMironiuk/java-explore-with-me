@@ -57,4 +57,18 @@ public class EventControllerPrivate {
         log.info("Получен запрос к эндпоинту PATCH, /users/{userId}/events/{eventId}");
         return eventService.cancelEventOfUser(userId, eventId);
     }
+
+    @PutMapping("/{eventId}/like")
+    public EventFullDto addLikeEvent(@PathVariable @PositiveOrZero Long userId,
+                                     @PathVariable @PositiveOrZero Long eventId) {
+        log.info("Получен запрос к эндпоинту PUT, /users/{userId}/events/{eventId}/like");
+        return eventService.addLikeEvent(userId, eventId);
+    }
+
+    @PutMapping("/{eventId}/dislike")
+    public EventFullDto addDislikeEvent(@PathVariable @PositiveOrZero Long userId,
+                                        @PathVariable @PositiveOrZero Long eventId) {
+        log.info("Получен запрос к эндпоинту PUT, /users/{userId}/events/{eventId}/dislike");
+        return eventService.addDislikeEvent(userId, eventId);
+    }
 }

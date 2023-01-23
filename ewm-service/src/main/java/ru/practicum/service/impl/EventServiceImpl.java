@@ -270,6 +270,17 @@ public class EventServiceImpl implements EventService {
                 .collect(toList());
     }
 
+    @Override
+    public EventFullDto addLikeEvent(Long userId, Long eventId) {
+        return null;
+    }
+
+    @Override
+    public EventFullDto addDislikeEvent(Long userId, Long eventId) {
+        return null;
+    }
+
+
     private int countCommentPublishedByEvent(Long eventId) {
         return commentRepository.countByEventIdAndStatus(eventId, StateComment.PUBLISHED);
     }

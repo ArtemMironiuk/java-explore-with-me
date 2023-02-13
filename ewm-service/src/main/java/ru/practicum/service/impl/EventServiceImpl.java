@@ -9,10 +9,9 @@ import org.springframework.transaction.annotation.Transactional;
 import ru.practicum.client.StatsClient;
 import ru.practicum.handler.exception.ObjectNotFoundException;
 import ru.practicum.handler.exception.ValidationException;
-import ru.practicum.model.Category;
-import ru.practicum.model.Event;
-import ru.practicum.model.Location;
-import ru.practicum.model.User;
+import ru.practicum.model.*;
+import ru.practicum.model.dto.RatingDto;
+import ru.practicum.model.dto.RatingDtoView;
 import ru.practicum.model.dto.comment.FullCommentDto;
 import ru.practicum.model.dto.event.*;
 import ru.practicum.model.enumstatus.Sort;
@@ -24,6 +23,7 @@ import ru.practicum.service.EventService;
 import ru.practicum.utils.mapper.CommentMapper;
 import ru.practicum.utils.mapper.EventMapper;
 import ru.practicum.utils.mapper.LocationMapper;
+import ru.practicum.utils.mapper.RatingMapper;
 
 import javax.servlet.http.HttpServletRequest;
 import java.time.Duration;
@@ -31,6 +31,7 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Comparator;
 import java.util.List;
+import java.util.Optional;
 
 import static java.util.stream.Collectors.toList;
 
@@ -46,6 +47,8 @@ public class EventServiceImpl implements EventService {
     private final LocationRepository locationRepository;
     private final RequestRepository requestRepository;
     private final CommentRepository commentRepository;
+
+    private final RatingRepository ratingRepository;
     private final StatsClient statsClient;
 
     private final DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
@@ -270,16 +273,45 @@ public class EventServiceImpl implements EventService {
                 .collect(toList());
     }
 
+    @Transactional
     @Override
-    public EventFullDto addLikeEvent(Long userId, Long eventId) {
-        return null;
+    public RatingDto addLikeEvent(Long userId, Long eventId) {
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new ObjectNotFoundException("Нет такого пользователя!"));
+        Event event = eventRepository.findById(eventId)
+                .orElseThrow(() -> new ObjectNotFoundException("Нет такого события!"));
+        Rating rating = RatingMapper.toRating(user, event);
+        rating.setLike(userId);
+        rating.setDislike(null);
+        Optional<Rating> byUserId = ratingRepository.findByUserId(userId);
+        if (byUserId.isPresent()) {
+            if (!byUserId.get().getDislike().equals(userId)) {
+                throw new ValidationException("Пользователь уже ставил лайк");
+            }
+            return RatingMapper.toRatingDto(ratingRepository.save(rating));
+        }
+        return RatingMapper.toRatingDto(ratingRepository.save(rating));
     }
 
+    @Transactional
     @Override
-    public EventFullDto addDislikeEvent(Long userId, Long eventId) {
-        return null;
+    public RatingDto addDislikeEvent(Long userId, Long eventId) {
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new ObjectNotFoundException("Нет такого пользователя!"));
+        Event event = eventRepository.findById(eventId)
+                .orElseThrow(() -> new ObjectNotFoundException("Нет такого события!"));
+        Rating rating = RatingMapper.toRating(user, event);
+        rating.setLike(null);
+        rating.setDislike(userId);
+        Optional<Rating> byUserId = ratingRepository.findByUserId(userId);
+        if (byUserId.isPresent()) {
+            if (!byUserId.get().getLike().equals(userId)) {
+                throw new ValidationException("Пользователь уже ставил дизлайк");
+            }
+            return RatingMapper.toRatingDto(ratingRepository.save(rating));
+        }
+        return RatingMapper.toRatingDto(ratingRepository.save(rating));
     }
-
 
     private int countCommentPublishedByEvent(Long eventId) {
         return commentRepository.countByEventIdAndStatus(eventId, StateComment.PUBLISHED);

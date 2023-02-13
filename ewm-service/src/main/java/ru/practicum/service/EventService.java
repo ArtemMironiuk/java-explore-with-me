@@ -1,5 +1,7 @@
 package ru.practicum.service;
 
+import ru.practicum.model.dto.RatingDto;
+import ru.practicum.model.dto.RatingDtoView;
 import ru.practicum.model.dto.comment.FullCommentDto;
 import ru.practicum.model.dto.event.*;
 import ru.practicum.model.enumstatus.Sort;
@@ -141,7 +143,7 @@ public interface EventService {
      * @param eventId id события
      * @return
      */
-    EventFullDto addLikeEvent(Long userId, Long eventId);
+    RatingDto addLikeEvent(Long userId, Long eventId);
 
     /**
      * Добавление дизлайка событию от текущего пользователя
@@ -149,5 +151,5 @@ public interface EventService {
      * @param eventId id события
      * @return
      */
-    EventFullDto addDislikeEvent(Long userId, Long eventId);
+    RatingDto addDislikeEvent(Long userId, Long eventId);
 }

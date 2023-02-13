@@ -2,9 +2,7 @@ package ru.practicum.model;
 
 import lombok.*;
 
-import javax.persistence.Entity;
-import javax.persistence.OneToOne;
-import javax.persistence.Table;
+import javax.persistence.*;
 
 @Getter
 @Setter
@@ -14,11 +12,18 @@ import javax.persistence.Table;
 @Entity
 @Table(name = "rating")
 public class Rating {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "id")
     private Long id;
-    @OneToOne
+    @ManyToOne
+    @JoinColumn(name = "user_id", nullable = false)
     private User user;
-    @OneToOne
+    @ManyToOne
+    @JoinColumn(name = "event_id", nullable = false)
     private Event event;
+    @Column(name = "is_like")
     private Long like;
+    @Column(name = "is_dislike")
     private Long dislike;
 }

@@ -1,5 +1,7 @@
 package ru.practicum.service;
 
+import ru.practicum.model.dto.RatingDto;
+import ru.practicum.model.dto.RatingDtoView;
 import ru.practicum.model.dto.comment.FullCommentDto;
 import ru.practicum.model.dto.event.*;
 import ru.practicum.model.enumstatus.Sort;
@@ -134,4 +136,20 @@ public interface EventService {
      * @return список комментария
      */
     List<FullCommentDto> findCommentsByEventId(Long eventId, Integer from, Integer size);
+
+    /**
+     * Добавление лайка событию от текущего пользователя
+     * @param userId id текущего пользователя
+     * @param eventId id события
+     * @return
+     */
+    RatingDto addLikeEvent(Long userId, Long eventId);
+
+    /**
+     * Добавление дизлайка событию от текущего пользователя
+     * @param userId id текущего пользователя
+     * @param eventId id события
+     * @return
+     */
+    RatingDto addDislikeEvent(Long userId, Long eventId);
 }
